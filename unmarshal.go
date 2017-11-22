@@ -1,13 +1,7 @@
-package oanda
+package main
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-	"net/url"
-	"os"
 	"time"
 )
 
@@ -34,18 +28,13 @@ type Bids struct {
 }
 
 
-func (p Prices) UnmarshalPricing(instrument string) (float64, float64) {
-        responseByte := p.SubscribeToPriceStream(instrument)
+func (p Prices) UnmarshalPricing(priceByte []byte) *Prices {
 
-        err := json.Unmarshal(responseByte, &p)
+        err := json.Unmarshal(priceByte, &p)
 
 				if err != nil {
                 panic(err)
         }
 
-				fmt.Println(p)
-				fmt.Println("TEST3 TEST3 TEST3")
-				fmt.Println(p.Asks)
-        //totally fake return values
-        return 1.232, 32.455
+        return &p
 }

@@ -1,18 +1,15 @@
-package oanda
+package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
-	"time"
 )
 
 
-var oandaUrl string = "https://api-fxtrade.oanda.com/v3"
+var oandaUrl string = "https://api-fxpractice.oanda.com/v3"
 var bearer string = "Bearer " + os.Getenv("OANDA_TOKEN")
 var accountId string = os.Getenv("OANDA_ACCOUNT_ID")
 
@@ -22,17 +19,19 @@ prices
 ***************************
 */
 
-func Pricing(instrument string) []byte {
+func GetPricing(instrument string) []byte {
         client := &http.Client{}
         queryValues := url.Values{}
+        queryValues.Add("instruments", instrument)
 
-        req, err := http.NewRequest("GET", oandaUrl+"/accounts/"+accountId+"/pricing"+queryValues.Encode(), nil)
-				queryValues.Add("instruments", instrument)
+        req, err := http.NewRequest("GET", oandaUrl+"/accounts/"+accountId+
+																		"/pricing?"+queryValues.Encode(), nil)
+
 				req.Header.Add("Content-Type", "application/json")
 				req.Header.Add("Authorization", bearer)
 
 
-				fmt.Println("TEST TEST TEST")
+				fmt.Println("GET PRICING!!!")
 				fmt.Println(req.Header)
 				fmt.Println(queryValues)
 
@@ -44,6 +43,9 @@ func Pricing(instrument string) []byte {
         }
 
         defer resp.Body.Close()
-        byte, _ := ioutil.ReadAll(resp.Body)
-        return byte
+        pricesByte, _ := ioutil.ReadAll(resp.Body)
+        bodyString := string(pricesByte)
+				fmt.Println("ENDPOINTS LINE 47")
+				fmt.Println(bodyString)
+        return pricesByte
 }
