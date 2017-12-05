@@ -82,7 +82,6 @@ type Candle struct {
 	Mid      map[string]interface{} `json: "mid"`
 }
 
-
 func (c Candles) UnmarshalCandles(priceByte []byte) *Candles {
 
 	err := json.Unmarshal(priceByte, &c)

@@ -38,20 +38,12 @@ func GetPricing(instrument string) []byte {
 
 	defer resp.Body.Close()
 	pricesByte, _ := ioutil.ReadAll(resp.Body)
-	bodyString := string(pricesByte)
-	fmt.Println(queryValues)
-	fmt.Println(bodyString)
+	fmt.Println(string(pricesByte))
+	fmt.Println(req)
 	fmt.Println(resp.StatusCode)
 	return pricesByte
 }
 
-//https://api-fxpractice.oanda.com/v3/instruments/candles?count=10&granularity=D&instruments=EUR_USD
-//https://api-fxpractice.oanda.com/v3/instruments/instrument/candles?count=10&granularity=D&instruments=EUR_USD
-//https://api-fxpractice.oanda.com/v3/instrumentsEUR_USD/candles?count=10&granularity=D&instruments=EUR_USD
-//"https://api-fxpractice.oanda.com/v3/instruments/USD_JPY/candles?
-//count=10&price=A&from=2016-01-01T00%3A00%3A00.000000000Z&granularity=D"
-
-//"https://api-fxpractice.oanda.com/v3"
 func GetCandles(instrument string, count string, granularity string) []byte {
 	client := &http.Client{}
 	queryValues := url.Values{}
@@ -74,11 +66,8 @@ func GetCandles(instrument string, count string, granularity string) []byte {
 
 	defer resp.Body.Close()
 	pricesByte, _ := ioutil.ReadAll(resp.Body)
-	bodyString := string(pricesByte)
-	fmt.Println(queryValues)
-	fmt.Println(bodyString)
-	fmt.Println(resp.StatusCode)
-	fmt.Println(queryValues)
+	fmt.Println(string(pricesByte))
 	fmt.Println(req)
+	fmt.Println(resp.StatusCode)
 	return pricesByte
 }
