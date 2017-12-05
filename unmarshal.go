@@ -5,6 +5,12 @@ import (
 	"time"
 )
 
+/*
+***************************
+prices
+***************************
+*/
+
 type Pricing struct {
 	Prices []Prices  `json: "prices"`
 	Time   time.Time `json: "time"`
@@ -40,4 +46,50 @@ func (p Pricing) UnmarshalPricing(priceByte []byte) *Pricing {
 	}
 
 	return &p
+}
+
+/*
+{"instrument":"EUR_USD",
+"granularity":"D",
+"candles":[
+{"complete":false,
+"volume":6556,
+"time":"2017-12-03T22:00:00.000000000Z",
+"mid":{"o":"1.18650","h":"1.18761","l":"1.18560","c":"1.18700"}}]}
+
+//{EUR_USD D [{false 37981 2017-12-04 22:00:00 +0000 UTC {   }}]}
+{"instrument":"EUR_USD",
+"granularity":"D",
+"candles":[{
+"complete":false,
+"volume":37981,
+"time":"2017-12-04T22:00:00.000000000Z",
+"mid":{"o":"1.18642","h":"1.18768","l":"1.18006","c":"1.18044"}}]
+}
+
+*/
+
+type Candles struct {
+	Instrument  string   `json: "instrument"`
+	Granularity string   `json: "granularity"`
+	Candles     []Candle `json: "candles"`
+}
+
+type Candle struct {
+	Complete bool                   `json: "complete"`
+	Volume   int64                  `json: "volume"`
+	Time     time.Time              `json: "time"`
+	Mid      map[string]interface{} `json: "mid"`
+}
+
+
+func (c Candles) UnmarshalCandles(priceByte []byte) *Candles {
+
+	err := json.Unmarshal(priceByte, &c)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return &c
 }

@@ -29,7 +29,7 @@ func GetPricing(instrument string) []byte {
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", bearer)
 
-  resp, err := client.Do(req)
+	resp, err := client.Do(req)
 
 	if err != nil {
 		fmt.Println(err)
@@ -45,9 +45,9 @@ func GetPricing(instrument string) []byte {
 	return pricesByte
 }
 
-  //https://api-fxpractice.oanda.com/v3/instruments/candles?count=10&granularity=D&instruments=EUR_USD
-  //https://api-fxpractice.oanda.com/v3/instruments/instrument/candles?count=10&granularity=D&instruments=EUR_USD
- //https://api-fxpractice.oanda.com/v3/instrumentsEUR_USD/candles?count=10&granularity=D&instruments=EUR_USD
+//https://api-fxpractice.oanda.com/v3/instruments/candles?count=10&granularity=D&instruments=EUR_USD
+//https://api-fxpractice.oanda.com/v3/instruments/instrument/candles?count=10&granularity=D&instruments=EUR_USD
+//https://api-fxpractice.oanda.com/v3/instrumentsEUR_USD/candles?count=10&granularity=D&instruments=EUR_USD
 //"https://api-fxpractice.oanda.com/v3/instruments/USD_JPY/candles?
 //count=10&price=A&from=2016-01-01T00%3A00%3A00.000000000Z&granularity=D"
 
@@ -65,7 +65,7 @@ func GetCandles(instrument string, count string, granularity string) []byte {
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", bearer)
 
-  resp, err := client.Do(req)
+	resp, err := client.Do(req)
 
 	if err != nil {
 		fmt.Println(err)
