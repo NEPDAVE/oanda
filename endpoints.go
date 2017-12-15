@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 )
 
 var oandaUrl string = "https://api-fxpractice.oanda.com/v3"
@@ -22,9 +23,14 @@ func GetPricing(instruments ...string) []byte {
 	client := &http.Client{}
 	queryValues := url.Values{}
 
-	for _, v := range instruments {
-		queryValues.Add("instruments", v)
-	}
+	//FIXME this is adding instruments=EUR_USD&instruments
+	//=USD_JPY&instruments=GBP_USD&instruments=USD... not good
+	//for _, v := range instruments {
+	//	queryValues.Add("instruments", v)
+	//}
+	instrumentsEncoded := strings.Join(instruments, ",")
+	//instrumentsEncoded := strings.Join(instruments, "%")
+	queryValues.Add("instruments", instrumentsEncoded)
 
 	req, err := http.NewRequest("GET", oandaUrl+"/accounts/"+accountId+
 		"/pricing?"+queryValues.Encode(), nil)
