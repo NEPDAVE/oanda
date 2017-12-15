@@ -18,10 +18,13 @@ prices
 ***************************
 */
 
-func GetPricing(instrument string) []byte {
+func GetPricing(instruments ...string) []byte {
 	client := &http.Client{}
 	queryValues := url.Values{}
-	queryValues.Add("instruments", instrument)
+
+	for _, v := range instruments {
+		queryValues.Add("instruments", v)
+	}
 
 	req, err := http.NewRequest("GET", oandaUrl+"/accounts/"+accountId+
 		"/pricing?"+queryValues.Encode(), nil)
