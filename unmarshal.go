@@ -48,6 +48,12 @@ func (p Pricing) UnmarshalPricing(priceByte []byte) *Pricing {
 	return &p
 }
 
+/*
+***************************
+history
+***************************
+*/
+
 type Candles struct {
 	Instrument  string   `json:"instrument"`
 	Granularity string   `json:"granularity"`

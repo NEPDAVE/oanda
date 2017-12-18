@@ -2,8 +2,8 @@ package oanda
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -14,11 +14,12 @@ var oandaUrl string = "https://api-fxpractice.oanda.com/v3"
 var bearer string = "Bearer " + os.Getenv("OANDA_TOKEN")
 var accountId string = os.Getenv("OANDA_ACCOUNT_ID")
 
-//FIXME starting to see a lot of repeat code, might want to write a "communications check"
-//callback function that prints out and logs the good stuff, IE request, Response
-//error codes, maybe even the time
-func CommCheck() {
-	fmt.Println("Communications Check")
+//callback function for printing out network requests
+func LogComms(req *http.Request, pricesByte []byte, statusCode int, err error) {
+	log.Printf("Request: %s\n", req)
+	log.Printf("Response: %s\n", string(pricesByte))
+	log.Printf("Status Code: %s\n", statusCode)
+	log.Printf("GetPricing Response Error: %s\n", err)
 }
 
 /*
@@ -46,21 +47,21 @@ func GetPricing(instruments ...string) ([]byte, error) {
 	if resp, err := client.Do(req); err != nil {
 		defer resp.Body.Close()
 		pricesByte, _ := ioutil.ReadAll(resp.Body)
-		fmt.Printf("Request: %s\n", req)
-		fmt.Printf("Response: %s\n", string(pricesByte))
-		fmt.Printf("Status Code: %s\n", resp.StatusCode)
-		fmt.Printf("GetPricing Response Error: %s\n", err)
+		LogComms(req, pricesByte, resp.StatusCode, err)
 		return []byte{}, errors.New("GetPricing Error")
 	} else {
 		defer resp.Body.Close()
 		pricesByte, _ := ioutil.ReadAll(resp.Body)
-		fmt.Printf("Request: %s\n", req)
-		fmt.Printf("Response: %s\n", string(pricesByte))
-		fmt.Printf("Status Code: %s\n", resp.StatusCode)
-		fmt.Printf("GetPricing Response Error: %s\n", err)
+		LogComms(req, pricesByte, resp.StatusCode, err)
 		return pricesByte, nil
 	}
 }
+
+/*
+***************************
+history
+***************************
+*/
 
 func GetCandles(instrument string, count string, granularity string) ([]byte, error) {
 	client := &http.Client{}
@@ -82,18 +83,73 @@ func GetCandles(instrument string, count string, granularity string) ([]byte, er
 	if resp, err := client.Do(req); err != nil {
 		defer resp.Body.Close()
 		pricesByte, _ := ioutil.ReadAll(resp.Body)
-		fmt.Printf("Request: %s\n", req)
-		fmt.Printf("Response: %s\n", string(pricesByte))
-		fmt.Printf("Status Code: %s\n", resp.StatusCode)
-		fmt.Printf("GetPricing Response Error: %s\n", err)
+		LogComms(req, pricesByte, resp.StatusCode, err)
 		return []byte{}, errors.New("GetCandles Error")
 	} else {
 		defer resp.Body.Close()
 		pricesByte, _ := ioutil.ReadAll(resp.Body)
-		fmt.Printf("Request: %s\n", req)
-		fmt.Printf("Response: %s\n", string(pricesByte))
-		fmt.Printf("Status Code: %s\n", resp.StatusCode)
-		fmt.Printf("GetCandles Response Error: %s\n", err)
+		LogComms(req, pricesByte, resp.StatusCode, err)
 		return pricesByte, nil
 	}
+}
+
+/*
+***************************
+order
+***************************
+*/
+
+//FIXME think about creating a CreateBuyOrder and CreateSellOrder func. This will
+//make things more readable. Also think about error handling and possibly another
+//function that will prepare the order and another function that will execute it
+//also take a look at the data structure and make sure it's getting marshalled
+//correctly also add a func to Unmarshal the data after placing an order
+//total side note also lookinto coding the double bb
+func CreateOrder(bid float64, ask float64, instrument string, side string, units int) {
+	var targetPrice float64
+	var stopLossPrice float64
+	var takeProfitPrice float64
+
+	if side == "buy" {
+		targetPrice = bid
+		stopLossPrice = bid - .00002
+		takeProfitPrice = bid + (ask - bid) - .000002
+	} else if side == "sell" {
+		targetPrice = ask
+		stopLossPrice = ask + .00002
+		takeProfitPrice = bid - (ask - bid) + .000002
+		units = units - (units * 2)
+	}
+
+	stopLoss := StopLossOnFill{TimeInForce: "GTC", Price: stopLossPrice}
+	takeProfit := TakeProfitOnFill{TimeInForce: "GTC", Price: takeProfitPrice}
+	orderData := Order{
+		Price:            targetPrice,
+		StopLossOnFill:   stopLoss,
+		TakeProfitOnFill: takeProfit,
+		TimeInForce:      "FOK",
+		Instrument:       instrument,
+		Type:             "LIMIT",
+		PositionFill:     "DEFAULT"}
+	order := OrderBody{Order: orderData}
+
+	jsonOrderBody, _ := json.Marshal(order)
+	body := bytes.NewBuffer(jsonOrderBody)
+	fmt.Println(body)
+	fmt.Println()
+	client := &http.Client{}
+
+	req, err := http.NewRequest("POST", oandaUrl+"/accounts/"+accountId+"/orders", body)
+	req.Header.Set("Authorization", bearer)
+	req.Header.Set("content-type", "application/json")
+	resp, err := client.Do(req)
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	defer resp.Body.Close()
+	byte, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(byte))
 }
