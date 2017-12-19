@@ -1,9 +1,11 @@
 package oanda
 
 import (
-	"encoding/json"
-	"time"
+	//"encoding/json"
+	//"time"
+  "fmt"
 )
+
 
 /*
 ***************************
@@ -11,7 +13,11 @@ order
 ***************************
 */
 
-type OrderBody struct {
+func donothing(){
+  fmt.Println("d")
+}
+
+type Orders struct {
 	Order Order `json:"order"`
 }
 

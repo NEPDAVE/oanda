@@ -84,3 +84,40 @@ func (c Candles) UnmarshalCandles(priceByte []byte) *Candles {
 
 	return &c
 }
+
+
+/*
+***************************
+orders
+***************************
+*/
+
+
+/*
+FIXME this is an example response for submitting an order
+{
+  "lastTransactionID": "6372",
+  "orderCreateTransaction": {
+    "accountID": "<ACCOUNT>",
+    "batchID": "6372",
+    "id": "6372",
+    "instrument": "USD_CAD",
+    "positionFill": "DEFAULT",
+    "price": "1.50000",
+    "reason": "CLIENT_ORDER",
+    "stopLossOnFill": {
+      "price": "1.70000",
+      "timeInForce": "GTC"
+    },
+    "time": "2016-06-22T18:41:29.285982286Z",
+    "timeInForce": "GTC",
+    "triggerCondition": "TRIGGER_DEFAULT",
+    "type": "LIMIT_ORDER",
+    "units": "-1000",
+    "userID": <USERID>
+  },
+  "relatedTransactionIDs": [
+    "6372"
+  ]
+}
+*/

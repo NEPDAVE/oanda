@@ -99,12 +99,95 @@ order
 ***************************
 */
 
+//FIXME the error handling in this file is not correct! Your git pull never worked!!!!!!
+
+
 //FIXME think about creating a CreateBuyOrder and CreateSellOrder func. This will
 //make things more readable. Also think about error handling and possibly another
 //function that will prepare the order and another function that will execute it
 //also take a look at the data structure and make sure it's getting marshalled
 //correctly also add a func to Unmarshal the data after placing an order
 //total side note also lookinto coding the double bb
+func CreateBuyOrder(bid float64, ask float64, instrument string, units int) Orders {
+	//FIXME stopLossPrice and takeProfitPrice are hardcoded to certain ratios
+	//this may not be the best way...
+  targetPrice := bid
+	stopLossPrice := bid - .00002
+	takeProfitPrice := bid + (ask - bid) - .000002
+  stopLoss := StopLossOnFill{TimeInForce: "GTC", Price: stopLossPrice}
+	takeProfit := TakeProfitOnFill{TimeInForce: "GTC", Price: takeProfitPrice}
+	orderData := Order{
+		Price:            targetPrice,
+		StopLossOnFill:   stopLoss,
+		TakeProfitOnFill: takeProfit,
+		TimeInForce:      "FOK",
+		Instrument:       instrument,
+		Type:             "LIMIT",
+		PositionFill:     "DEFAULT"}
+	order := OrderBody{Order: orderData}
+
+	jsonOrders, err := json.Marshal(order)
+	if err != nil {
+		log.Printf("Json Marshal Error: %s\n", err)
+	}
+
+	return jsonOrders
+
+}
+
+//FIXME remember that this units param should be negative
+func CreateSellOrder(bid float64, ask float64, instrument string, units int) Orders {
+	//FIXME stopLossPrice and takeProfitPrice are hardcoded to certain ratios
+	//this may not be the best way...
+	targetPrice = ask
+	stopLossPrice = ask + .00002
+	takeProfitPrice = bid - (ask - bid) + .000002
+  stopLoss := StopLossOnFill{TimeInForce: "GTC", Price: stopLossPrice}
+	takeProfit := TakeProfitOnFill{TimeInForce: "GTC", Price: takeProfitPrice}
+	orderData := Order{
+		Price:            targetPrice,
+		StopLossOnFill:   stopLoss,
+		TakeProfitOnFill: takeProfit,
+		TimeInForce:      "FOK",
+		Instrument:       instrument,
+		Type:             "LIMIT",
+		PositionFill:     "DEFAULT"}
+	order := OrderBody{Order: orderData}
+
+	jsonOrders, err := json.Marshal(order)
+	if err != nil {
+		log.Printf("Json Marshal Error: %s\n", err)
+	}
+
+	return jsonOrders
+
+}
+
+func SubmitOrder(orders Orders) ([]byte, error) {
+	body := bytes.NewBuffer(jsonOrders)
+	//FIXME these should be moved somewhere or removed
+	fmt.Println(body)
+	fmt.Println()
+	client := &http.Client{}
+
+	req, err := http.NewRequest("POST", oandaUrl+"/accounts/"+accountId+"/orders", body)
+	req.Header.Set("Authorization", bearer)
+	req.Header.Set("content-type", "application/json")
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	defer resp.Body.Close()
+	byte, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(byte))
+
+}
+
+
 func CreateOrder(bid float64, ask float64, instrument string, side string, units int) {
 	var targetPrice float64
 	var stopLossPrice float64
