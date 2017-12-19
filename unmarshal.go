@@ -85,13 +85,11 @@ func (c Candles) UnmarshalCandles(priceByte []byte) *Candles {
 	return &c
 }
 
-
 /*
 ***************************
 orders
 ***************************
 */
-
 
 /*
 FIXME this is an example response for submitting an order

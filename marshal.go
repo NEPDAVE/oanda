@@ -3,9 +3,8 @@ package oanda
 import (
 	//"encoding/json"
 	//"time"
-  "fmt"
+	"fmt"
 )
-
 
 /*
 ***************************
@@ -13,8 +12,8 @@ order
 ***************************
 */
 
-func donothing(){
-  fmt.Println("d")
+func donothing() {
+	fmt.Println("d")
 }
 
 type Orders struct {
