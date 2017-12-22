@@ -12,6 +12,16 @@ import (
 	"strings"
 )
 
+//FIXME currently you're doing error handling for non 200 status requests,
+//however there are other responses oanda can deliver, like
+//{"errorMessage":"Timeout waiting for response."}
+//shit like that needs to be handled too
+
+//also this error handling did not catch the last service outage yo!!!!
+//the code was not working, checked http://api-status.oanda.com/
+//and sure enough there is an outage that the code did not detect....
+//need that to be working yo!!!!!!!!!!!!
+
 var oandaUrl string = "https://api-fxpractice.oanda.com/v3"
 var bearer string = "Bearer " + os.Getenv("OANDA_TOKEN")
 var accountId string = os.Getenv("OANDA_ACCOUNT_ID")
