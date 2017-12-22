@@ -1,20 +1,15 @@
 package oanda
 
 import (
-	//"encoding/json"
-	//"time"
+	"encoding/json"
 	"fmt"
 )
 
 /*
 ***************************
-order
+orders
 ***************************
 */
-
-func donothing() {
-	fmt.Println("d")
-}
 
 type Orders struct {
 	Order Order `json:"order"`
@@ -39,4 +34,26 @@ type StopLossOnFill struct {
 type TakeProfitOnFill struct {
 	TimeInForce string  `json:"timeInForce"`
 	Price       float64 `json:"price"`
+}
+
+/*
+FIXME here as an example
+user := &User{Name: "Frank"}
+    b, err := json.Marshal(user)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    fmt.Println(string(b))
+*/
+
+func (o Orders) MarshalOrders(orders Orders) []byte {
+
+	ordersByte, err := json.Marshal(orders)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return ordersByte
 }

@@ -1,8 +1,9 @@
 package oanda
 
 import (
-	"errors"
 	"bytes"
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -100,8 +101,8 @@ orders
 ***************************
 */
 
-func SubmitOrder(orders Orders) ([]byte, error) {
-	body := bytes.NewBuffer(jsonOrders)
+func SubmitOrder(orders []byte) ([]byte, error) {
+	body := bytes.NewBuffer(orders)
 	//FIXME these should be moved somewhere or removed
 	fmt.Println(body)
 	fmt.Println()
@@ -125,6 +126,6 @@ func SubmitOrder(orders Orders) ([]byte, error) {
 		defer resp.Body.Close()
 		ordersByte, _ := ioutil.ReadAll(resp.Body)
 		LogComms(req, ordersByte, resp.StatusCode, err)
-		return pricesByte, nil
+		return ordersByte, nil
 	}
 }
