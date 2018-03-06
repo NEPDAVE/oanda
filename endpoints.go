@@ -53,20 +53,21 @@ func GetPricing(instruments ...string) ([]byte, error) {
 	req.Header.Add("Authorization", bearer)
 
 	if err != nil {
-		return []byte{}, errors.New("GetPricing Error")
+		return []byte{}, errors.New("error building request")
 	}
 
-	if resp, err := client.Do(req); err != nil {
-		defer resp.Body.Close()
-		pricesByte, _ := ioutil.ReadAll(resp.Body)
+	resp, err := client.Do(req)
+	pricesByte, _ := ioutil.ReadAll(resp.Body)
+
+	defer resp.Body.Close()
+
+	if err != nil {
 		LogComms(req, pricesByte, resp.StatusCode, err)
-		return []byte{}, errors.New("GetPricing Error")
-	} else {
-		defer resp.Body.Close()
-		pricesByte, _ := ioutil.ReadAll(resp.Body)
-		LogComms(req, pricesByte, resp.StatusCode, err)
-		return pricesByte, nil
+		return []byte{}, errors.New("error making request")
 	}
+
+	return pricesByte, nil
+
 }
 
 /*
@@ -89,20 +90,21 @@ func GetCandles(instrument string, count string, granularity string) ([]byte, er
 	req.Header.Add("Authorization", bearer)
 
 	if err != nil {
-		return []byte{}, errors.New("GetPricing Error")
+		return []byte{}, errors.New("error building request")
 	}
 
-	if resp, err := client.Do(req); err != nil {
-		defer resp.Body.Close()
-		pricesByte, _ := ioutil.ReadAll(resp.Body)
+	resp, err := client.Do(req)
+	pricesByte, _ := ioutil.ReadAll(resp.Body)
+
+	defer resp.Body.Close()
+
+	if err != nil {
 		LogComms(req, pricesByte, resp.StatusCode, err)
-		return []byte{}, errors.New("GetCandles Error")
-	} else {
-		defer resp.Body.Close()
-		pricesByte, _ := ioutil.ReadAll(resp.Body)
-		LogComms(req, pricesByte, resp.StatusCode, err)
-		return pricesByte, nil
+		return []byte{}, errors.New("error making request")
 	}
+
+	return pricesByte, nil
+
 }
 
 /*
@@ -124,18 +126,19 @@ func SubmitOrder(orders []byte) ([]byte, error) {
 	req.Header.Set("content-type", "application/json")
 
 	if err != nil {
-		return []byte{}, errors.New("SubmitOrder Error")
+		return []byte{}, errors.New("error building request")
 	}
 
-	if resp, err := client.Do(req); err != nil {
-		defer resp.Body.Close()
-		ordersByte, _ := ioutil.ReadAll(resp.Body)
-		LogComms(req, ordersByte, resp.StatusCode, err)
-		return []byte{}, errors.New("SubmitOrder Error")
-	} else {
-		defer resp.Body.Close()
-		ordersByte, _ := ioutil.ReadAll(resp.Body)
-		LogComms(req, ordersByte, resp.StatusCode, err)
-		return ordersByte, nil
+	resp, err := client.Do(req)
+	pricesByte, _ := ioutil.ReadAll(resp.Body)
+
+	defer resp.Body.Close()
+
+	if err != nil {
+		LogComms(req, pricesByte, resp.StatusCode, err)
+		return []byte{}, errors.New("error making request")
 	}
+
+	return pricesByte, nil
+
 }
