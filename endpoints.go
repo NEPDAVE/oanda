@@ -28,9 +28,9 @@ var accountId string = os.Getenv("OANDA_ACCOUNT_ID")
 
 //callback function for printing out network requests
 func LogComms(req *http.Request, pricesByte []byte, statusCode int, err error) {
-	log.Printf("Request: %s\n", req)
+	log.Printf("Request: %p\n", req)
 	log.Printf("Response: %s\n", string(pricesByte))
-	log.Printf("Status Code: %s\n", statusCode)
+	log.Printf("Status Code: %d\n", statusCode)
 	log.Printf("GetPricing Response Error: %s\n", err)
 }
 
@@ -40,6 +40,7 @@ prices
 ***************************
 */
 
+//Retrieves latest pricing data from Oanda API
 func GetPricing(instruments ...string) ([]byte, error) {
 	client := &http.Client{}
 	queryValues := url.Values{}
