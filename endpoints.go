@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"strconv"
 )
 
 //FIXME currently you're doing error handling for non 200 status requests,
@@ -59,12 +60,14 @@ func GetPricing(instruments ...string) ([]byte, error) {
 
 	resp, err := client.Do(req)
 	pricesByte, _ := ioutil.ReadAll(resp.Body)
+	status := strconv.Itoa(resp.StatusCode)
 
 	defer resp.Body.Close()
 
 	if err != nil {
 		LogComms(req, pricesByte, resp.StatusCode, err)
-		return []byte{}, errors.New("error making request")
+		errorMessage := fmt.Sprintf("error making request - status code: %s", status)
+		return []byte{}, errors.New(errorMessage)
 	}
 
 	return pricesByte, nil
@@ -96,12 +99,14 @@ func GetCandles(instrument string, count string, granularity string) ([]byte, er
 
 	resp, err := client.Do(req)
 	pricesByte, _ := ioutil.ReadAll(resp.Body)
+	status := strconv.Itoa(resp.StatusCode)
 
 	defer resp.Body.Close()
 
 	if err != nil {
 		LogComms(req, pricesByte, resp.StatusCode, err)
-		return []byte{}, errors.New("error making request")
+		errorMessage := fmt.Sprintf("error making request - status code: %s", status)
+		return []byte{}, errors.New(errorMessage)
 	}
 
 	return pricesByte, nil
@@ -132,12 +137,14 @@ func SubmitOrder(orders []byte) ([]byte, error) {
 
 	resp, err := client.Do(req)
 	pricesByte, _ := ioutil.ReadAll(resp.Body)
+	status := strconv.Itoa(resp.StatusCode)
 
 	defer resp.Body.Close()
 
 	if err != nil {
 		LogComms(req, pricesByte, resp.StatusCode, err)
-		return []byte{}, errors.New("error making request")
+		errorMessage := fmt.Sprintf("error making request - status code: %s", status)
+		return []byte{}, errors.New(errorMessage)
 	}
 
 	return pricesByte, nil
