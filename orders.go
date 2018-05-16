@@ -1,10 +1,10 @@
 package oanda
 
 import (
-	//"log"
-	//"strconv"
-	//"errors"
-	//"fmt"
+//"log"
+//"strconv"
+//"errors"
+//"fmt"
 )
 
 //FIXME the error handling in this file is not correct! Your git pull never worked!!!!!!

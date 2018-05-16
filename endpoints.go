@@ -10,7 +10,11 @@ import (
 	"net/url"
 	"os"
 	"strings"
+<<<<<<< HEAD
 	"bufio"
+=======
+	"strconv"
+>>>>>>> a9c850a55e2aba5c82d23804670a59e650a7bd93
 )
 
 //FIXME currently you're doing error handling for non 200 status requests,
@@ -30,9 +34,9 @@ var accountId string = os.Getenv("OANDA_ACCOUNT_ID")
 
 //callback function for printing out network requests
 func LogComms(req *http.Request, pricesByte []byte, statusCode int, err error) {
-	log.Printf("Request: %s\n", req)
+	log.Printf("Request: %p\n", req)
 	log.Printf("Response: %s\n", string(pricesByte))
-	log.Printf("Status Code: %s\n", statusCode)
+	log.Printf("Status Code: %d\n", statusCode)
 	log.Printf("GetPricing Response Error: %s\n", err)
 }
 
@@ -42,6 +46,7 @@ prices
 ***************************
 */
 
+<<<<<<< HEAD
 func StreamPricing(instruments ...string) ([]byte, error) {
 	client := &http.Client{}
 	queryValues := url.Values{}
@@ -88,6 +93,9 @@ func StreamPricing(instruments ...string) ([]byte, error) {
 }
 
 
+=======
+//Retrieves latest pricing data from Oanda API
+>>>>>>> a9c850a55e2aba5c82d23804670a59e650a7bd93
 func GetPricing(instruments ...string) ([]byte, error) {
 	client := &http.Client{}
 	queryValues := url.Values{}
@@ -101,20 +109,23 @@ func GetPricing(instruments ...string) ([]byte, error) {
 	req.Header.Add("Authorization", bearer)
 
 	if err != nil {
-		return []byte{}, errors.New("GetPricing Error")
+		return []byte{}, errors.New("error building request")
 	}
 
-	if resp, err := client.Do(req); err != nil {
-		defer resp.Body.Close()
-		pricesByte, _ := ioutil.ReadAll(resp.Body)
+	resp, err := client.Do(req)
+	pricesByte, _ := ioutil.ReadAll(resp.Body)
+	status := strconv.Itoa(resp.StatusCode)
+
+	defer resp.Body.Close()
+
+	if err != nil {
 		LogComms(req, pricesByte, resp.StatusCode, err)
-		return []byte{}, errors.New("GetPricing Error")
-	} else {
-		defer resp.Body.Close()
-		pricesByte, _ := ioutil.ReadAll(resp.Body)
-		LogComms(req, pricesByte, resp.StatusCode, err)
-		return pricesByte, nil
+		errorMessage := fmt.Sprintf("error making request - status code: %s", status)
+		return []byte{}, errors.New(errorMessage)
 	}
+
+	return pricesByte, nil
+
 }
 
 /*
@@ -137,20 +148,23 @@ func GetCandles(instrument string, count string, granularity string) ([]byte, er
 	req.Header.Add("Authorization", bearer)
 
 	if err != nil {
-		return []byte{}, errors.New("GetPricing Error")
+		return []byte{}, errors.New("error building request")
 	}
 
-	if resp, err := client.Do(req); err != nil {
-		defer resp.Body.Close()
-		pricesByte, _ := ioutil.ReadAll(resp.Body)
+	resp, err := client.Do(req)
+	pricesByte, _ := ioutil.ReadAll(resp.Body)
+	status := strconv.Itoa(resp.StatusCode)
+
+	defer resp.Body.Close()
+
+	if err != nil {
 		LogComms(req, pricesByte, resp.StatusCode, err)
-		return []byte{}, errors.New("GetCandles Error")
-	} else {
-		defer resp.Body.Close()
-		pricesByte, _ := ioutil.ReadAll(resp.Body)
-		LogComms(req, pricesByte, resp.StatusCode, err)
-		return pricesByte, nil
+		errorMessage := fmt.Sprintf("error making request - status code: %s", status)
+		return []byte{}, errors.New(errorMessage)
 	}
+
+	return pricesByte, nil
+
 }
 
 /*
@@ -172,18 +186,21 @@ func SubmitOrder(orders []byte) ([]byte, error) {
 	req.Header.Set("content-type", "application/json")
 
 	if err != nil {
-		return []byte{}, errors.New("SubmitOrder Error")
+		return []byte{}, errors.New("error building request")
 	}
 
-	if resp, err := client.Do(req); err != nil {
-		defer resp.Body.Close()
-		ordersByte, _ := ioutil.ReadAll(resp.Body)
-		LogComms(req, ordersByte, resp.StatusCode, err)
-		return []byte{}, errors.New("SubmitOrder Error")
-	} else {
-		defer resp.Body.Close()
-		ordersByte, _ := ioutil.ReadAll(resp.Body)
-		LogComms(req, ordersByte, resp.StatusCode, err)
-		return ordersByte, nil
+	resp, err := client.Do(req)
+	pricesByte, _ := ioutil.ReadAll(resp.Body)
+	status := strconv.Itoa(resp.StatusCode)
+
+	defer resp.Body.Close()
+
+	if err != nil {
+		LogComms(req, pricesByte, resp.StatusCode, err)
+		errorMessage := fmt.Sprintf("error making request - status code: %s", status)
+		return []byte{}, errors.New(errorMessage)
 	}
+
+	return pricesByte, nil
+
 }
