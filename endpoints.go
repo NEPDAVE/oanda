@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"bufio"
 )
 
 //FIXME currently you're doing error handling for non 200 status requests,
@@ -23,6 +24,7 @@ import (
 //need that to be working yo!!!!!!!!!!!!
 
 var oandaUrl string = "https://api-fxpractice.oanda.com/v3"
+var streamOandaUrl string = "https://stream-fxpractice.oanda.com/v3"
 var bearer string = "Bearer " + os.Getenv("OANDA_TOKEN")
 var accountId string = os.Getenv("OANDA_ACCOUNT_ID")
 
@@ -39,6 +41,52 @@ func LogComms(req *http.Request, pricesByte []byte, statusCode int, err error) {
 prices
 ***************************
 */
+
+func StreamPricing(instruments ...string) ([]byte, error) {
+	client := &http.Client{}
+	queryValues := url.Values{}
+	instrumentsEncoded := strings.Join(instruments, ",")
+	queryValues.Add("instruments", instrumentsEncoded)
+
+	//https://stream-fxtrade.oanda.com/v3/accounts/<ACCOUNT>/pricing/stream?instruments=EUR_USD%2CUSD_CAD"
+	//https://stream-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/pricing/stream?instruments=EUR_USD
+	//https://stream-fxpractice.oanda.com/accounts/101-001-6395930-001/pricing?instruments=EUR_USD
+
+	req, err := http.NewRequest("GET", streamOandaUrl+"/accounts/"+accountId+
+		"/pricing/stream?"+queryValues.Encode(), nil)
+
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", bearer)
+
+	if err != nil {
+		return []byte{}, errors.New("GetPricing Error")
+	}
+	fmt.Println(req)
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+		//pricesByte, _ := ioutil.ReadAll(resp.Body)
+		//LogComms(req, pricesByte, resp.StatusCode, err)
+		fmt.Println("error line 67")
+		return []byte{}, errors.New("GetPricing Error")
+	}
+	defer resp.Body.Close()
+
+		reader := bufio.NewReader(resp.Body)
+		for {
+			line, err := reader.ReadBytes('\n')
+			if err != nil{
+				fmt.Println("77")
+				return []byte{}, errors.New("GetPricing Error")
+			}
+			//pricesByte, _ := ioutil.ReadAll(line)
+			fmt.Println(line)
+		}
+		//LogComms(req, []byte{}, resp.StatusCode, err)
+		return []byte{}, nil
+}
+
 
 func GetPricing(instruments ...string) ([]byte, error) {
 	client := &http.Client{}
