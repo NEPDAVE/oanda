@@ -10,11 +10,8 @@ import (
 	"net/url"
 	"os"
 	"strings"
-<<<<<<< HEAD
 	"bufio"
-=======
 	"strconv"
->>>>>>> a9c850a55e2aba5c82d23804670a59e650a7bd93
 )
 
 //FIXME currently you're doing error handling for non 200 status requests,
@@ -46,16 +43,15 @@ prices
 ***************************
 */
 
-<<<<<<< HEAD
 func StreamPricing(instruments ...string) ([]byte, error) {
 	client := &http.Client{}
 	queryValues := url.Values{}
 	instrumentsEncoded := strings.Join(instruments, ",")
 	queryValues.Add("instruments", instrumentsEncoded)
 
-	//https://stream-fxtrade.oanda.com/v3/accounts/<ACCOUNT>/pricing/stream?instruments=EUR_USD%2CUSD_CAD"
+	//example urls that work
+	//https://stream-fxpractice.oanda.com/v3/accounts/<ACCOUNT>/pricing/stream?instruments=EUR_USD%2CUSD_CAD"
 	//https://stream-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/pricing/stream?instruments=EUR_USD
-	//https://stream-fxpractice.oanda.com/accounts/101-001-6395930-001/pricing?instruments=EUR_USD
 
 	req, err := http.NewRequest("GET", streamOandaUrl+"/accounts/"+accountId+
 		"/pricing/stream?"+queryValues.Encode(), nil)
@@ -88,14 +84,11 @@ func StreamPricing(instruments ...string) ([]byte, error) {
 			//pricesByte, _ := ioutil.ReadAll(line)
 			fmt.Println(line)
 		}
-		//LogComms(req, []byte{}, resp.StatusCode, err)
+		LogComms(req, []byte{}, resp.StatusCode, err)
 		return []byte{}, nil
 }
 
 
-=======
-//Retrieves latest pricing data from Oanda API
->>>>>>> a9c850a55e2aba5c82d23804670a59e650a7bd93
 func GetPricing(instruments ...string) ([]byte, error) {
 	client := &http.Client{}
 	queryValues := url.Values{}
