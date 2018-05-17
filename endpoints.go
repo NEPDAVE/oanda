@@ -49,10 +49,6 @@ func StreamPricing(instruments ...string) ([]byte, error) {
 	instrumentsEncoded := strings.Join(instruments, ",")
 	queryValues.Add("instruments", instrumentsEncoded)
 
-	//example urls that work
-	//https://stream-fxpractice.oanda.com/v3/accounts/<ACCOUNT>/pricing/stream?instruments=EUR_USD%2CUSD_CAD"
-	//https://stream-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/pricing/stream?instruments=EUR_USD
-
 	req, err := http.NewRequest("GET", streamOandaUrl+"/accounts/"+accountId+
 		"/pricing/stream?"+queryValues.Encode(), nil)
 
@@ -60,17 +56,16 @@ func StreamPricing(instruments ...string) ([]byte, error) {
 	req.Header.Add("Authorization", bearer)
 
 	if err != nil {
-		return []byte{}, errors.New("GetPricing Error")
+		return []byte{}, errors.New("StreamPricing Error")
 	}
-	fmt.Println(req)
 
-	resp, err := client.Do(req)
+	//fmt.Println(req)
+  resp, err := client.Do(req)
 
 	if err != nil {
 		//pricesByte, _ := ioutil.ReadAll(resp.Body)
 		//LogComms(req, pricesByte, resp.StatusCode, err)
-		fmt.Println("error line 67")
-		return []byte{}, errors.New("GetPricing Error")
+		return []byte{}, errors.New("StreamPricing Error")
 	}
 	defer resp.Body.Close()
 
@@ -79,7 +74,7 @@ func StreamPricing(instruments ...string) ([]byte, error) {
 			line, err := reader.ReadBytes('\n')
 			if err != nil{
 				fmt.Println("77")
-				return []byte{}, errors.New("GetPricing Error")
+				return []byte{}, errors.New("StreamPricing Error")
 			}
 			//pricesByte, _ := ioutil.ReadAll(line)
 			fmt.Println(line)
