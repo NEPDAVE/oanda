@@ -43,7 +43,8 @@ prices
 ***************************
 */
 
-func StreamPricing(instruments ...string) ([]byte, error) {
+func StreamPricing(instruments ...string) (chan []byte, error) {
+//func StreamPricing(instruments ...string) ([]byte, error) {
 	client := &http.Client{}
 	queryValues := url.Values{}
 	instrumentsEncoded := strings.Join(instruments, ",")
@@ -59,10 +60,15 @@ func StreamPricing(instruments ...string) ([]byte, error) {
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", bearer)
 
+	//creating channel
+	out := make(chan []byte)
+
 	if err != nil {
-		return []byte{}, errors.New("GetPricing Error")
+		return out, errors.New("GetPricing Error")
 	}
 	fmt.Println(req)
+
+
 
 	resp, err := client.Do(req)
 
@@ -70,7 +76,7 @@ func StreamPricing(instruments ...string) ([]byte, error) {
 		//pricesByte, _ := ioutil.ReadAll(resp.Body)
 		//LogComms(req, pricesByte, resp.StatusCode, err)
 		fmt.Println("error line 67")
-		return []byte{}, errors.New("GetPricing Error")
+		return out, errors.New("GetPricing Error")
 	}
 	defer resp.Body.Close()
 
@@ -79,13 +85,14 @@ func StreamPricing(instruments ...string) ([]byte, error) {
 			line, err := reader.ReadBytes('\n')
 			if err != nil{
 				fmt.Println("77")
-				return []byte{}, errors.New("GetPricing Error")
+				return out, errors.New("GetPricing Error")
 			}
 			//pricesByte, _ := ioutil.ReadAll(line)
-			fmt.Println(line)
+			out <- line
 		}
+		close(out)
 		LogComms(req, []byte{}, resp.StatusCode, err)
-		return []byte{}, nil
+		return out, nil
 }
 
 
