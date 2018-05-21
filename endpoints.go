@@ -50,10 +50,6 @@ func StreamPricing(instruments ...string) (chan []byte, error) {
 	instrumentsEncoded := strings.Join(instruments, ",")
 	queryValues.Add("instruments", instrumentsEncoded)
 
-	//example urls that work
-	//https://stream-fxpractice.oanda.com/v3/accounts/<ACCOUNT>/pricing/stream?instruments=EUR_USD%2CUSD_CAD"
-	//https://stream-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/pricing/stream?instruments=EUR_USD
-
 	req, err := http.NewRequest("GET", streamOandaUrl+"/accounts/"+accountId+
 		"/pricing/stream?"+queryValues.Encode(), nil)
 
@@ -64,19 +60,31 @@ func StreamPricing(instruments ...string) (chan []byte, error) {
 	out := make(chan []byte)
 
 	if err != nil {
+<<<<<<< HEAD
 		return out, errors.New("GetPricing Error")
+=======
+		return []byte{}, errors.New("StreamPricing Error")
+>>>>>>> 3192b1a7f119aa37022ec57f5f2f462ba59d32d7
 	}
-	fmt.Println(req)
 
+<<<<<<< HEAD
 
 
 	resp, err := client.Do(req)
+=======
+	//fmt.Println(req)
+  resp, err := client.Do(req)
+>>>>>>> 3192b1a7f119aa37022ec57f5f2f462ba59d32d7
 
 	if err != nil {
 		//pricesByte, _ := ioutil.ReadAll(resp.Body)
 		//LogComms(req, pricesByte, resp.StatusCode, err)
+<<<<<<< HEAD
 		fmt.Println("error line 67")
 		return out, errors.New("GetPricing Error")
+=======
+		return []byte{}, errors.New("StreamPricing Error")
+>>>>>>> 3192b1a7f119aa37022ec57f5f2f462ba59d32d7
 	}
 	defer resp.Body.Close()
 
@@ -85,7 +93,11 @@ func StreamPricing(instruments ...string) (chan []byte, error) {
 			line, err := reader.ReadBytes('\n')
 			if err != nil{
 				fmt.Println("77")
+<<<<<<< HEAD
 				return out, errors.New("GetPricing Error")
+=======
+				return []byte{}, errors.New("StreamPricing Error")
+>>>>>>> 3192b1a7f119aa37022ec57f5f2f462ba59d32d7
 			}
 			//pricesByte, _ := ioutil.ReadAll(line)
 			out <- line
