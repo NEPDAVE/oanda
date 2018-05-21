@@ -43,12 +43,14 @@ prices
 ***************************
 */
 
-func StreamPricing(instruments ...string) (chan []byte, error) {
+func StreamPricing(instruments string, out chan []byte) {
+//removing variadic functionality for testing
 //func StreamPricing(instruments ...string) ([]byte, error) {
 	client := &http.Client{}
 	queryValues := url.Values{}
-	instrumentsEncoded := strings.Join(instruments, ",")
-	queryValues.Add("instruments", instrumentsEncoded)
+	//instrumentsEncoded := strings.Join(instruments, ",")
+	//queryValues.Add("instruments", instrumentsEncoded
+	queryValues.Add("instruments", instruments)
 
 	req, err := http.NewRequest("GET", streamOandaUrl+"/accounts/"+accountId+
 		"/pricing/stream?"+queryValues.Encode(), nil)
@@ -56,35 +58,22 @@ func StreamPricing(instruments ...string) (chan []byte, error) {
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", bearer)
 
-	//creating channel
-	out := make(chan []byte)
 
 	if err != nil {
-<<<<<<< HEAD
-		return out, errors.New("GetPricing Error")
-=======
-		return []byte{}, errors.New("StreamPricing Error")
->>>>>>> 3192b1a7f119aa37022ec57f5f2f462ba59d32d7
+		//return out, errors.New("GetPricing Error")
+		close(out)
+		fmt.Println("error line 65")
 	}
 
-<<<<<<< HEAD
-
-
 	resp, err := client.Do(req)
-=======
-	//fmt.Println(req)
-  resp, err := client.Do(req)
->>>>>>> 3192b1a7f119aa37022ec57f5f2f462ba59d32d7
 
 	if err != nil {
 		//pricesByte, _ := ioutil.ReadAll(resp.Body)
 		//LogComms(req, pricesByte, resp.StatusCode, err)
-<<<<<<< HEAD
+		close(out)
 		fmt.Println("error line 67")
-		return out, errors.New("GetPricing Error")
-=======
-		return []byte{}, errors.New("StreamPricing Error")
->>>>>>> 3192b1a7f119aa37022ec57f5f2f462ba59d32d7
+		//return out, errors.New("GetPricing Error")
+		//return []byte{}, errors.New("StreamPricing Error")
 	}
 	defer resp.Body.Close()
 
@@ -92,19 +81,17 @@ func StreamPricing(instruments ...string) (chan []byte, error) {
 		for {
 			line, err := reader.ReadBytes('\n')
 			if err != nil{
+				close(out)
 				fmt.Println("77")
-<<<<<<< HEAD
-				return out, errors.New("GetPricing Error")
-=======
-				return []byte{}, errors.New("StreamPricing Error")
->>>>>>> 3192b1a7f119aa37022ec57f5f2f462ba59d32d7
+				//return out, errors.New("GetPricing Error")
+				//return []byte{}, errors.New("StreamPricing Error")
 			}
 			//pricesByte, _ := ioutil.ReadAll(line)
 			out <- line
 		}
 		close(out)
 		LogComms(req, []byte{}, resp.StatusCode, err)
-		return out, nil
+		//return out, nil
 }
 
 
