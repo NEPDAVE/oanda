@@ -11,6 +11,24 @@ prices
 ***************************
 */
 
+//{"time":"2016-09-20T15:05:50.163791738Z","type":"HEARTBEAT"}
+type Heartbeat struct {
+	Time        time.Time `json:"time"`
+	Type        string    `json:"type"`
+
+}
+
+func (h Heartbeat) UnmarshalHeartbeat(heartbeatByte []byte) *Heartbeat {
+
+	err := json.Unmarshal(heartbeatByte, &h)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return &h
+}
+
 type Pricing struct {
 	Prices []Prices  `json:"prices"`
 	Time   time.Time `json:"time"`
@@ -37,6 +55,17 @@ type Bid struct {
 	Liquidity int64  `json:"liquidity"`
 }
 
+func (p Prices) UnmarshalPrices(priceByte []byte) *Prices {
+
+	err := json.Unmarshal(priceByte, &p)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return &p
+}
+
 func (p Pricing) UnmarshalPricing(priceByte []byte) *Pricing {
 
 	err := json.Unmarshal(priceByte, &p)
@@ -47,6 +76,7 @@ func (p Pricing) UnmarshalPricing(priceByte []byte) *Pricing {
 
 	return &p
 }
+
 
 /*
 ***************************

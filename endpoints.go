@@ -43,6 +43,7 @@ prices
 ***************************
 */
 
+
 func StreamPricing(instruments string, out chan []byte) {
 //removing variadic functionality for testing
 //func StreamPricing(instruments ...string) ([]byte, error) {
