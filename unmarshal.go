@@ -54,6 +54,7 @@ type Bid struct {
 	Liquidity int64  `json:"liquidity"`
 }
 
+//used for StreamPricing
 func (p Prices) UnmarshalPrices(priceByte []byte) *Prices {
 
 	err := json.Unmarshal(priceByte, &p)
@@ -65,6 +66,7 @@ func (p Prices) UnmarshalPrices(priceByte []byte) *Prices {
 	return &p
 }
 
+//used for GetPricing
 func (p Pricing) UnmarshalPricing(priceByte []byte) *Pricing {
 
 	err := json.Unmarshal(priceByte, &p)

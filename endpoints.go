@@ -43,7 +43,7 @@ prices
 ***************************
 */
 
-//possible value to send over StreamPricing channel
+//possible value to send over StreamPricing channel?
 // type StreamResult struct {
 //     Message string
 //     Error error
@@ -62,13 +62,13 @@ func StreamPricing(instruments string, out chan []byte) {
 	req.Header.Add("Authorization", bearer)
 
 	if err != nil {
-		log.Printf("StreamPricing Error Building Request: %s\n", err)
+		log.Printf("StreamPricing error building request: %s\n", err)
 	}
 
 	resp, err := client.Do(req)
 
 	if err != nil {
-		log.Printf("StreamPricing Error Making Request: %s\n", err)
+		log.Printf("StreamPricing error making request: %s\n", err)
 	}
 
 	defer resp.Body.Close()
@@ -78,11 +78,11 @@ func StreamPricing(instruments string, out chan []byte) {
 	for {
 		line, err := reader.ReadBytes('\n')
 		if err != nil {
-			log.Printf("StreamPricing Error Reading Response ByteSlice: %s\n", err)
+			log.Printf("StreamPricing error reading response byteSlice: %s\n", err)
 		}
 		out <- line
 	}
-	log.Printf("Closing StreamPricing Channel")
+	log.Printf("closing streamPricing channel")
 }
 
 func GetPricing(instruments ...string) ([]byte, error) {
