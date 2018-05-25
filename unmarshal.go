@@ -13,9 +13,8 @@ prices
 
 //{"time":"2016-09-20T15:05:50.163791738Z","type":"HEARTBEAT"}
 type Heartbeat struct {
-	Time        time.Time `json:"time"`
-	Type        string    `json:"type"`
-
+	Time time.Time `json:"time"`
+	Type string    `json:"type"`
 }
 
 func (h Heartbeat) UnmarshalHeartbeat(heartbeatByte []byte) *Heartbeat {
@@ -76,7 +75,6 @@ func (p Pricing) UnmarshalPricing(priceByte []byte) *Pricing {
 
 	return &p
 }
-
 
 /*
 ***************************

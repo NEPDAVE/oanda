@@ -1,6 +1,7 @@
 package oanda
 
 import (
+	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
@@ -9,9 +10,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"strings"
-	"bufio"
 	"strconv"
+	"strings"
 )
 
 //FIXME currently you're doing error handling for non 200 status requests,
@@ -43,14 +43,16 @@ prices
 ***************************
 */
 
+//possible value to send over StreamPricing channel
+// type StreamResult struct {
+//     Message string
+//     Error error
+// }
 
+//possible to stream multiple prices at once. opting not to for simplicity
 func StreamPricing(instruments string, out chan []byte) {
-//removing variadic functionality for testing
-//func StreamPricing(instruments ...string) ([]byte, error) {
 	client := &http.Client{}
 	queryValues := url.Values{}
-	//instrumentsEncoded := strings.Join(instruments, ",")
-	//queryValues.Add("instruments", instrumentsEncoded
 	queryValues.Add("instruments", instruments)
 
 	req, err := http.NewRequest("GET", streamOandaUrl+"/accounts/"+accountId+
@@ -59,42 +61,29 @@ func StreamPricing(instruments string, out chan []byte) {
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", bearer)
 
-
 	if err != nil {
-		//return out, errors.New("GetPricing Error")
-		close(out)
-		fmt.Println("error line 65")
+		log.Printf("StreamPricing Error Building Request: %s\n", err)
 	}
 
 	resp, err := client.Do(req)
 
 	if err != nil {
-		//pricesByte, _ := ioutil.ReadAll(resp.Body)
-		//LogComms(req, pricesByte, resp.StatusCode, err)
-		close(out)
-		fmt.Println("error line 67")
-		//return out, errors.New("GetPricing Error")
-		//return []byte{}, errors.New("StreamPricing Error")
+		log.Printf("StreamPricing Error Making Request: %s\n", err)
 	}
+
 	defer resp.Body.Close()
+	defer close(out)
 
-		reader := bufio.NewReader(resp.Body)
-		for {
-			line, err := reader.ReadBytes('\n')
-			if err != nil{
-				close(out)
-				fmt.Println("77")
-				//return out, errors.New("GetPricing Error")
-				//return []byte{}, errors.New("StreamPricing Error")
-			}
-			//pricesByte, _ := ioutil.ReadAll(line)
-			out <- line
+	reader := bufio.NewReader(resp.Body)
+	for {
+		line, err := reader.ReadBytes('\n')
+		if err != nil {
+			log.Printf("StreamPricing Error Reading Response ByteSlice: %s\n", err)
 		}
-		close(out)
-		LogComms(req, []byte{}, resp.StatusCode, err)
-		//return out, nil
+		out <- line
+	}
+	log.Printf("Closing StreamPricing Channel")
 }
-
 
 func GetPricing(instruments ...string) ([]byte, error) {
 	client := &http.Client{}
