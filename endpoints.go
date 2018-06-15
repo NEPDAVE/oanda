@@ -44,13 +44,16 @@ prices
 */
 
 //possible value to send over StreamPricing channel?
-// type StreamResult struct {
-//     Message string
-//     Error error
-// }
+type StreamResult struct {
+	PriceByte []byte
+	Error     error
+}
 
 //possible to stream multiple prices at once. opting not to for simplicity
-func StreamPricing(instruments string, out chan []byte) {
+//old way
+//func StreamPricing(instruments string, out chan []byte) {
+//new way
+func StreamPricing(instruments string, out chan StreamResult) {
 	client := &http.Client{}
 	queryValues := url.Values{}
 	queryValues.Add("instruments", instruments)
@@ -80,7 +83,9 @@ func StreamPricing(instruments string, out chan []byte) {
 		if err != nil {
 			log.Printf("StreamPricing error reading response byteSlice: %s\n", err)
 		}
-		out <- line
+		//old way
+		//out <- line
+		out <- StreamResult{PriceByte: line, Error: err}
 	}
 	log.Printf("closing streamPricing channel")
 }
