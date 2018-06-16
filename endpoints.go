@@ -14,15 +14,6 @@ import (
 	"strings"
 )
 
-//FIXME currently you're doing error handling for non 200 status requests,
-//however there are other responses oanda can deliver, like
-//{"errorMessage":"Timeout waiting for response."}
-//shit like that needs to be handled too
-
-//also this error handling did not catch the last service outage yo!!!!
-//the code was not working, checked http://api-status.oanda.com/
-//and sure enough there is an outage that the code did not detect....
-//need that to be working yo!!!!!!!!!!!!
 
 var oandaUrl string = "https://api-fxpractice.oanda.com/v3"
 var streamOandaUrl string = "https://stream-fxpractice.oanda.com/v3"
@@ -43,16 +34,11 @@ prices
 ***************************
 */
 
-//possible value to send over StreamPricing channel?
 type StreamResult struct {
 	PriceByte []byte
 	Error     error
 }
 
-//possible to stream multiple prices at once. opting not to for simplicity
-//old way
-//func StreamPricing(instruments string, out chan []byte) {
-//new way
 func StreamPricing(instruments string, out chan StreamResult) {
 	client := &http.Client{}
 	queryValues := url.Values{}
@@ -83,8 +69,6 @@ func StreamPricing(instruments string, out chan StreamResult) {
 		if err != nil {
 			log.Printf("StreamPricing error reading response byteSlice: %s\n", err)
 		}
-		//old way
-		//out <- line
 		out <- StreamResult{PriceByte: line, Error: err}
 	}
 	log.Printf("closing streamPricing channel")
