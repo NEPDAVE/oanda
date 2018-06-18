@@ -14,7 +14,11 @@ import (
 	"strings"
 )
 
+<<<<<<< HEAD
 //FIXME need to make the URLs environment variables
+=======
+
+>>>>>>> 4bdba3e1870da73dfcd92442215eb9ea85cfb719
 var oandaUrl string = "https://api-fxpractice.oanda.com/v3"
 var streamOandaUrl string = "https://stream-fxpractice.oanda.com/v3"
 var bearer string = "Bearer " + os.Getenv("OANDA_TOKEN")
@@ -26,13 +30,19 @@ prices
 ***************************
 */
 
+<<<<<<< HEAD
 //type sent over channel in StreamPricing func
+=======
+>>>>>>> 4bdba3e1870da73dfcd92442215eb9ea85cfb719
 type StreamResult struct {
 	PriceByte []byte
 	Error     error
 }
 
+<<<<<<< HEAD
 //possible to stream multiple prices at once. opting not to for simplicity
+=======
+>>>>>>> 4bdba3e1870da73dfcd92442215eb9ea85cfb719
 func StreamPricing(instruments string, out chan StreamResult) {
 	defer close(out)
 
