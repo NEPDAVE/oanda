@@ -10,9 +10,8 @@ import (
 	"strings"
 )
 
-//FIXME need to make the URLs environment variables
-var oandaUrl string = "https://api-fxpractice.oanda.com/v3"
-var streamOandaUrl string = "https://stream-fxpractice.oanda.com/v3"
+var oandaUrl string = os.Getenv("OANDA_URL")
+var streamOandaUrl string = os.Getenv("STREAM_OANDA_URL")
 var bearer string = "Bearer " + os.Getenv("OANDA_TOKEN")
 var accountId string = os.Getenv("OANDA_ACCOUNT_ID")
 
