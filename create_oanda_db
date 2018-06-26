@@ -1,0 +1,17 @@
+CREATE DATABASE oanda;
+
+\c oanda
+
+CREATE TABLE eur_usd_prices (
+uuid serial PRIMARY KEY,
+type text,
+ask NUMERIC(7, 6),
+bid NUMERIC(7, 6),
+closeout_ask NUMERIC(7, 6),
+closeout_bid NUMERIC(7, 6),
+instrument text,
+status text,
+time timestamp
+);
+
+\q
