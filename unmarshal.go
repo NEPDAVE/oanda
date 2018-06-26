@@ -35,8 +35,8 @@ type Pricing struct {
 
 type Prices struct {
 	Type        string    `json:"type"`
-	Asks        []Ask     `json:"asks"`
 	Bids        []Bid     `json:"bids"`
+	Asks        []Ask     `jons:"asks"`
 	CloseOutAsk string    `json:"closeoutAsk"`
 	CloseOutBid string    `json:"closeoutBid"`
 	Instrument  string    `json:"instrument"`
