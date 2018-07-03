@@ -11,15 +11,13 @@ prices
 ***************************
 */
 
-//Heartbeat is the structure of the heartbeat object returned from the
-//Oanda streaming endpoint
+//Heartbeat is returned from the Oanda streaming endpoint
 type Heartbeat struct {
 	Time time.Time `json:"time"`
 	Type string    `json:"type"`
 }
 
-//UnmarshalHeartbeat unmarshals the heartbeat object returned from the
-//Oanda streaming endpoint
+//UnmarshalHeartbeat is a method of Heartbeat
 func (h Heartbeat) UnmarshalHeartbeat(heartbeatByte []byte) *Heartbeat {
 
 	err := json.Unmarshal(heartbeatByte, &h)
@@ -31,14 +29,14 @@ func (h Heartbeat) UnmarshalHeartbeat(heartbeatByte []byte) *Heartbeat {
 	return &h
 }
 
-//Pricing is the structure of entire unmarshaled object returned from
-//Oanda pricing endpoint
+//Pricing is returned from the Oanda pricing endpoint
 type Pricing struct {
 	Prices []Prices  `json:"prices"`
 	Time   time.Time `json:"time"`
 }
 
-//Prices is structure of all prices data embedded within Pricing struct
+//Prices is embedded within each Pricing struct and  is returned object from
+//the Oanda streaming endpoint
 type Prices struct {
 	Type        string    `json:"type"`
 	Bids        []Bid     `json:"bids"`
@@ -50,11 +48,12 @@ type Prices struct {
 	Time        time.Time `json:"time"`
 }
 
-//Ask is the structure of
+//Ask is an object embedded is each
 type Ask struct {
 	Price     string `json:"price"`
 	Liquidity int64  `json:"liquidity"`
 }
+
 
 type Bid struct {
 	Price     string `json:"price"`
