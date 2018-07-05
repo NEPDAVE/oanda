@@ -27,7 +27,7 @@ type StreamResult struct {
 	Error     error
 }
 
-//possible to stream multiple prices at once. opting not to for simplicity
+//StreamPricing can stream multiple prices at once. opting not to for simplicity
 func StreamPricing(instruments string, out chan StreamResult) {
 	defer close(out)
 
