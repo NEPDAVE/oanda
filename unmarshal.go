@@ -48,13 +48,13 @@ type Prices struct {
 	Time        time.Time `json:"time"`
 }
 
-//Ask is an object embedded is each
+//Ask represents one element in the Asks list of a Prices Struct
 type Ask struct {
 	Price     string `json:"price"`
 	Liquidity int64  `json:"liquidity"`
 }
 
-
+//Bid represents one element in the Bids list of a Prices Struct
 type Bid struct {
 	Price     string `json:"price"`
 	Liquidity int64  `json:"liquidity"`
@@ -72,7 +72,7 @@ func (p Prices) UnmarshalPrices(priceByte []byte) *Prices {
 	return &p
 }
 
-//used for GetPricing
+//UnmarshalPricing unmarshals the Pricing data byte slice from Oanda
 func (p Pricing) UnmarshalPricing(priceByte []byte) *Pricing {
 
 	err := json.Unmarshal(priceByte, &p)
@@ -90,12 +90,15 @@ history
 ***************************
 */
 
+//Candles represents the data structure returned by Oanda when requesting
+//multiple Candles
 type Candles struct {
 	Instrument  string   `json:"instrument"`
 	Granularity string   `json:"granularity"`
 	Candles     []Candle `json:"candles"`
 }
 
+//Candle represents a single data point in an instrument's pricing history
 type Candle struct {
 	Complete bool      `json:"complete"`
 	Volume   int64     `json:"volume"`
@@ -103,6 +106,7 @@ type Candle struct {
 	Mid      Mid       `json:"mid"`
 }
 
+//Mid represents the actual quotes/prices in a Candle
 type Mid struct {
 	Open  string `json:"o"`
 	High  string `json:"h"`
@@ -110,6 +114,7 @@ type Mid struct {
 	Close string `json:"c"`
 }
 
+//UnmarshalCandles unmarshals History data byte slice from Oanda
 func (c Candles) UnmarshalCandles(priceByte []byte) *Candles {
 
 	err := json.Unmarshal(priceByte, &c)
@@ -128,6 +133,7 @@ orders
 */
 
 /*
+
 FIXME this is an example response for submitting an order
 {
   "lastTransactionID": "6372",

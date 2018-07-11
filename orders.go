@@ -7,7 +7,8 @@ import (
 //"fmt"
 )
 
-//FIXME the error handling in this file is not correct! Your git pull never worked!!!!!!
+//CreateOrder will build the Order sturct needed to submit an order. This maybe
+//FIXME should be a method attached to the Order struct...?
 //FIXME think about creating a CreateBuyOrder and CreateSellOrder func. This will
 //make things more readable. Also think about error handling and possibly another
 //function that will prepare the order and another function that will execute it

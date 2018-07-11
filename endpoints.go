@@ -10,10 +10,10 @@ import (
 	"strings"
 )
 
-var oandaUrl string = os.Getenv("OANDA_URL")
-var streamOandaUrl string = os.Getenv("STREAM_OANDA_URL")
-var bearer string = "Bearer " + os.Getenv("OANDA_TOKEN")
-var accountId string = os.Getenv("OANDA_ACCOUNT_ID")
+var oandaURL = os.Getenv("OANDA_URL")
+var streamoandaURL = os.Getenv("STREAM_OANDA_URL")
+var bearer = "Bearer " + os.Getenv("OANDA_TOKEN")
+var accountID = os.Getenv("OANDA_ACCOUNT_ID")
 
 /*
 ***************************
@@ -21,7 +21,7 @@ prices
 ***************************
 */
 
-//type sent over channel in StreamPricing func
+//StreamResult is sent over channel in StreamPricing func
 type StreamResult struct {
 	PriceByte []byte
 	Error     error
@@ -35,7 +35,7 @@ func StreamPricing(instruments string, out chan StreamResult) {
 	queryValues := url.Values{}
 	queryValues.Add("instruments", instruments)
 
-	req, err := http.NewRequest("GET", streamOandaUrl+"/accounts/"+accountId+
+	req, err := http.NewRequest("GET", streamoandaURL+"/accounts/"+accountID+
 		"/pricing/stream?"+queryValues.Encode(), nil)
 
 	req.Header.Add("Content-Type", "application/json")
@@ -46,11 +46,12 @@ func StreamPricing(instruments string, out chan StreamResult) {
 	}
 
 	resp, err := client.Do(req)
-	defer resp.Body.Close()
 
 	if err != nil {
 		out <- StreamResult{Error: err}
 	}
+
+	defer resp.Body.Close()
 
 	reader := bufio.NewReader(resp.Body)
 
@@ -63,13 +64,14 @@ func StreamPricing(instruments string, out chan StreamResult) {
 	}
 }
 
+//GetPricing does single request to API
 func GetPricing(instruments ...string) ([]byte, error) {
 	client := &http.Client{}
 	queryValues := url.Values{}
 	instrumentsEncoded := strings.Join(instruments, ",")
 	queryValues.Add("instruments", instrumentsEncoded)
 
-	req, err := http.NewRequest("GET", oandaUrl+"/accounts/"+accountId+
+	req, err := http.NewRequest("GET", oandaURL+"/accounts/"+accountID+
 		"/pricing?"+queryValues.Encode(), nil)
 
 	req.Header.Add("Content-Type", "application/json")
@@ -80,6 +82,11 @@ func GetPricing(instruments ...string) ([]byte, error) {
 	}
 
 	resp, err := client.Do(req)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
 	defer resp.Body.Close()
 
 	pricesByte, _ := ioutil.ReadAll(resp.Body)
@@ -97,6 +104,7 @@ history
 ***************************
 */
 
+//GetCandles retrieves instrument history in the form of a candle stick
 func GetCandles(instrument string, count string, granularity string) ([]byte, error) {
 	client := &http.Client{}
 	queryValues := url.Values{}
@@ -104,7 +112,7 @@ func GetCandles(instrument string, count string, granularity string) ([]byte, er
 	queryValues.Add("count", count)
 	queryValues.Add("granularity", granularity)
 
-	req, err := http.NewRequest("GET", oandaUrl+"/instruments"+"/"+instrument+
+	req, err := http.NewRequest("GET", oandaURL+"/instruments"+"/"+instrument+
 		"/candles?"+queryValues.Encode(), nil)
 
 	req.Header.Add("Content-Type", "application/json")
@@ -115,6 +123,11 @@ func GetCandles(instrument string, count string, granularity string) ([]byte, er
 	}
 
 	resp, err := client.Do(req)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
 	defer resp.Body.Close()
 
 	pricesByte, _ := ioutil.ReadAll(resp.Body)
@@ -134,11 +147,12 @@ orders
 ***************************
 */
 
+//SubmitOrder used to submit orders
 func SubmitOrder(orders []byte) ([]byte, error) {
 	body := bytes.NewBuffer(orders)
 	client := &http.Client{}
 
-	req, err := http.NewRequest("POST", oandaUrl+"/accounts/"+accountId+"/orders", body)
+	req, err := http.NewRequest("POST", oandaURL+"/accounts/"+accountID+"/orders", body)
 
 	req.Header.Set("Authorization", bearer)
 	req.Header.Set("content-type", "application/json")
@@ -148,6 +162,11 @@ func SubmitOrder(orders []byte) ([]byte, error) {
 	}
 
 	resp, err := client.Do(req)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
 	defer resp.Body.Close()
 
 	pricesByte, _ := ioutil.ReadAll(resp.Body)

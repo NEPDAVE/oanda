@@ -11,10 +11,12 @@ orders
 ***************************
 */
 
+//Orders represents entire order(s) object when submiting and order to Oanda
 type Orders struct {
 	Order Order `json:"order"`
 }
 
+//Order represents single order to Oanda
 type Order struct {
 	Price            float64          `json:"prices"`
 	StopLossOnFill   StopLossOnFill   `json:"stopLossOnFill"`
@@ -26,27 +28,19 @@ type Order struct {
 	PositionFill     string           `json:"positionFill"`
 }
 
+//StopLossOnFill represents stop loss parameters for an Order
 type StopLossOnFill struct {
 	TimeInForce string  `json:"timeInForce"`
 	Price       float64 `json:"price"`
 }
 
+//TakeProfitOnFill represents take profit parameters for an Order
 type TakeProfitOnFill struct {
 	TimeInForce string  `json:"timeInForce"`
 	Price       float64 `json:"price"`
 }
 
-/*
-FIXME here as an example
-user := &User{Name: "Frank"}
-    b, err := json.Marshal(user)
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-    fmt.Println(string(b))
-*/
-
+//MarshalOrders marshals order data into []byte for making API requests
 func (o Orders) MarshalOrders(orders Orders) []byte {
 
 	ordersByte, err := json.Marshal(orders)
