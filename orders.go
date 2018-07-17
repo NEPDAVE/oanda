@@ -4,18 +4,36 @@ import (
 //"log"
 //"strconv"
 //"errors"
-//"fmt"
+"fmt"
 )
 
 //MarketBuyOrder builds struct needed for marshaling data into a []byte
+//FIXME stopLoss and takeProfit are hard coded?
 func MarketBuyOrder(bid float64, ask float64, instrument string, units int) Orders {
-	stopLossPrice := bid -
-	takeProfitPrice := bid + (ask - bid) - .000002
+	stopLossPrice := fmt.Sprintf("%.6f", bid - (ask * .005))
+	takeProfitPrice := fmt.Sprintf("%.6f", ask + (ask * .01))
 	stopLoss := StopLossOnFill{TimeInForce: "GTC", Price: stopLossPrice}
 	takeProfit := TakeProfitOnFill{TimeInForce: "GTC", Price: takeProfitPrice}
-	timeInForce :=
-	type :=
-	positionFill :=
+	orderData := Order{
+		StopLossOnFill:   stopLoss,
+		TakeProfitOnFill: takeProfit,
+		TimeInForce:      "FOK",
+		Instrument:       instrument,
+		Type:             "MARKET",
+		PositionFill:     "DEFAULT"}
+	order := Orders{Order: orderData}
+
+	return order
+}
+
+
+//MarketSellOrder builds struct needed for marshaling data into a []byte
+//FIXME stopLoss and takeProfit are hard coded?
+func MarketSellOrder(bid float64, ask float64, instrument string, units int) Orders {
+	stopLossPrice := fmt.Sprintf("%.6f", ask + (bid * .005))
+	takeProfitPrice := fmt.Sprintf("%.6f", bid - (ask * .01))
+	stopLoss := StopLossOnFill{TimeInForce: "GTC", Price: stopLossPrice}
+	takeProfit := TakeProfitOnFill{TimeInForce: "GTC", Price: takeProfitPrice}
 	orderData := Order{
 		StopLossOnFill:   stopLoss,
 		TakeProfitOnFill: takeProfit,
