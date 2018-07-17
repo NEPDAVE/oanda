@@ -7,6 +7,9 @@ import (
 "fmt"
 )
 
+//golang playground testing
+//https://play.golang.org/p/AC_eqpsQApa
+
 //MarketBuyOrder builds struct needed for marshaling data into a []byte
 //FIXME stopLoss and takeProfit are hard coded?
 func MarketBuyOrder(bid float64, ask float64, instrument string, units int) Orders {
