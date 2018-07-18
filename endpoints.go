@@ -104,7 +104,7 @@ history
 ***************************
 */
 
-//GetCandles retrieves instrument history in the form of a candle stick
+//GetCandles retrieves instrument history in the form of candle sticks
 func GetCandles(instrument string, count string, granularity string) ([]byte, error) {
 	client := &http.Client{}
 	queryValues := url.Values{}
@@ -130,7 +130,7 @@ func GetCandles(instrument string, count string, granularity string) ([]byte, er
 
 	defer resp.Body.Close()
 
-	pricesByte, _ := ioutil.ReadAll(resp.Body)
+	candlesByte, _ := ioutil.ReadAll(resp.Body)
 
 	defer resp.Body.Close()
 
@@ -138,7 +138,7 @@ func GetCandles(instrument string, count string, granularity string) ([]byte, er
 		return []byte{}, err
 	}
 
-	return pricesByte, err
+	return candlesByte, err
 }
 
 /*
