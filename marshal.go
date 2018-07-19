@@ -13,7 +13,7 @@ orders
 
 //Orders represents entire order(s) object when submiting and order to Oanda
 type Orders struct {
-	Order Order `json:"order"`
+	OrderData Order `json:"order"`
 }
 
 //Order represents single order to Oanda
@@ -41,41 +41,43 @@ type TakeProfitOnFill struct {
 }
 
 //MarketBuyOrder builds struct needed for marshaling data into a []byte
-func (o Order) MarketBuyOrder(bid float64, ask float64, instrument string, units int) Order {
+func (o Orders) MarketBuyOrder(bid float64, ask float64, instrument string, units int) Orders {
 	//tp/sl ratio is 3 to 1
 	stopLossPrice := fmt.Sprintf("%.6f", bid-(ask*.005))
+	stopLossOnFill := StopLossOnFill{TimeInForce: "GTC", Price: stopLossPrice}
+
 	takeProfitPrice := fmt.Sprintf("%.6f", ask+(ask*.015))
-	stopLoss := StopLossOnFill{TimeInForce: "GTC", Price: stopLossPrice}
-	takeProfit := TakeProfitOnFill{TimeInForce: "GTC", Price: takeProfitPrice}
-	orderData := Order{
-		StopLossOnFill:   stopLoss,
-		TakeProfitOnFill: takeProfit,
+	takeProfitOnFill := TakeProfitOnFill{TimeInForce: "GTC", Price: takeProfitPrice}
+
+	o.OrderData = Order{
+		StopLossOnFill:   stopLossOnFill,
+		TakeProfitOnFill: takeProfitOnFill,
 		TimeInForce:      "FOK",
 		Instrument:       instrument,
 		Type:             "MARKET",
 		PositionFill:     "DEFAULT"}
-	order := Orders{Order: orderData}
 
-	return order
+	return o
 }
 
 //MarketSellOrder builds struct needed for marshaling data into a []byte
-func MarketSellOrder(bid float64, ask float64, instrument string, units int) Order {
+func (o Orders) MarketSellOrder(bid float64, ask float64, instrument string, units int) Orders {
 	//tp/sl ratio is 3 to 1
 	stopLossPrice := fmt.Sprintf("%.6f", ask+(bid*.005))
+	stopLossOnFill := StopLossOnFill{TimeInForce: "GTC", Price: stopLossPrice}
+
 	takeProfitPrice := fmt.Sprintf("%.6f", bid-(ask*.015))
-	stopLoss := StopLossOnFill{TimeInForce: "GTC", Price: stopLossPrice}
-	takeProfit := TakeProfitOnFill{TimeInForce: "GTC", Price: takeProfitPrice}
-	orderData := Order{
-		StopLossOnFill:   stopLoss,
-		TakeProfitOnFill: takeProfit,
+	takeProfitOnFill := TakeProfitOnFill{TimeInForce: "GTC", Price: takeProfitPrice}
+
+	o.OrderData = Order{
+		StopLossOnFill:   stopLossOnFill,
+		TakeProfitOnFill: takeProfitOnFill,
 		TimeInForce:      "FOK",
 		Instrument:       instrument,
 		Type:             "MARKET",
 		PositionFill:     "DEFAULT"}
-	order := Orders{Order: orderData}
 
-	return order
+	return o
 }
 
 //MarshalOrders marshals order data into []byte for making API requests
