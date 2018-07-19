@@ -40,6 +40,44 @@ type TakeProfitOnFill struct {
 	Price       string `json:"price"`
 }
 
+//MarketBuyOrder builds struct needed for marshaling data into a []byte
+func (o Order) MarketBuyOrder(bid float64, ask float64, instrument string, units int) Order {
+	//tp/sl ratio is 3 to 1
+	stopLossPrice := fmt.Sprintf("%.6f", bid-(ask*.005))
+	takeProfitPrice := fmt.Sprintf("%.6f", ask+(ask*.015))
+	stopLoss := StopLossOnFill{TimeInForce: "GTC", Price: stopLossPrice}
+	takeProfit := TakeProfitOnFill{TimeInForce: "GTC", Price: takeProfitPrice}
+	orderData := Order{
+		StopLossOnFill:   stopLoss,
+		TakeProfitOnFill: takeProfit,
+		TimeInForce:      "FOK",
+		Instrument:       instrument,
+		Type:             "MARKET",
+		PositionFill:     "DEFAULT"}
+	order := Orders{Order: orderData}
+
+	return order
+}
+
+//MarketSellOrder builds struct needed for marshaling data into a []byte
+func MarketSellOrder(bid float64, ask float64, instrument string, units int) Order {
+	//tp/sl ratio is 3 to 1
+	stopLossPrice := fmt.Sprintf("%.6f", ask+(bid*.005))
+	takeProfitPrice := fmt.Sprintf("%.6f", bid-(ask*.015))
+	stopLoss := StopLossOnFill{TimeInForce: "GTC", Price: stopLossPrice}
+	takeProfit := TakeProfitOnFill{TimeInForce: "GTC", Price: takeProfitPrice}
+	orderData := Order{
+		StopLossOnFill:   stopLoss,
+		TakeProfitOnFill: takeProfit,
+		TimeInForce:      "FOK",
+		Instrument:       instrument,
+		Type:             "MARKET",
+		PositionFill:     "DEFAULT"}
+	order := Orders{Order: orderData}
+
+	return order
+}
+
 //MarshalOrders marshals order data into []byte for making API requests
 func (o Orders) MarshalOrders(orders Orders) []byte {
 
