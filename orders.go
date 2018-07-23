@@ -28,7 +28,7 @@ type Order struct {
 	TakeProfitOnFill TakeProfitOnFill `json:"takeProfitOnFill"`
 	TimeInForce      string           `json:"timeInForce"`
 	Instrument       string           `json:"instrument"`
-	Units            string              `json:"units"`
+	Units            string           `json:"units"`
 	Type             string           `json:"type"`
 	PositionFill     string           `json:"positionFill"`
 }

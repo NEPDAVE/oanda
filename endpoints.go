@@ -10,6 +10,10 @@ import (
 	"strings"
 )
 
+var oandaURL = os.Getenv("OANDA_URL")
+var streamoandaURL = os.Getenv("STREAM_OANDA_URL")
+var bearer = "Bearer " + os.Getenv("OANDA_TOKEN")
+var accountID = os.Getenv("OANDA_ACCOUNT_ID")
 
 /*
 ***************************
