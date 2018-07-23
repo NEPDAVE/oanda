@@ -48,10 +48,10 @@ type TakeProfitOnFill struct {
 //MarketBuyOrder builds struct needed for marshaling data into a []byte
 func (o Orders) MarketBuyOrder(bid float64, ask float64, instrument string, units int) Orders {
 	//tp/sl ratio is 3 to 1
-	stopLossPrice := fmt.Sprintf("%.6f", bid-(ask*.005))
+	stopLossPrice := fmt.Sprintf("%.5f", bid-(ask*.005))
 	stopLossOnFill := StopLossOnFill{TimeInForce: "GTC", Price: stopLossPrice}
 
-	takeProfitPrice := fmt.Sprintf("%.6f", ask+(ask*.015))
+	takeProfitPrice := fmt.Sprintf("%.5f", ask+(ask*.015))
 	takeProfitOnFill := TakeProfitOnFill{TimeInForce: "GTC", Price: takeProfitPrice}
 
 	o.OrderData = Order{
@@ -68,10 +68,10 @@ func (o Orders) MarketBuyOrder(bid float64, ask float64, instrument string, unit
 //MarketSellOrder builds struct needed for marshaling data into a []byte
 func (o Orders) MarketSellOrder(bid float64, ask float64, instrument string, units int) Orders {
 	//tp/sl ratio is 3 to 1
-	stopLossPrice := fmt.Sprintf("%.6f", ask+(bid*.005))
+	stopLossPrice := fmt.Sprintf("%.5f", ask+(bid*.005))
 	stopLossOnFill := StopLossOnFill{TimeInForce: "GTC", Price: stopLossPrice}
 
-	takeProfitPrice := fmt.Sprintf("%.6f", bid-(ask*.015))
+	takeProfitPrice := fmt.Sprintf("%.5f", bid-(ask*.015))
 	takeProfitOnFill := TakeProfitOnFill{TimeInForce: "GTC", Price: takeProfitPrice}
 
 	o.OrderData = Order{
