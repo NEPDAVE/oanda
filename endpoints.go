@@ -169,11 +169,11 @@ func SubmitOrder(orders []byte) ([]byte, error) {
 
 	defer resp.Body.Close()
 
-	pricesByte, _ := ioutil.ReadAll(resp.Body)
+	ordersResponseByte, _ := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
 		return []byte{}, err
 	}
 
-	return pricesByte, err
+	return ordersResponseByte, err
 }
