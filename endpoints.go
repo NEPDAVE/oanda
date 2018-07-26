@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"fmt"
 )
 
 var oandaURL = os.Getenv("OANDA_URL")
@@ -177,3 +178,70 @@ func SubmitOrder(orders []byte) ([]byte, error) {
 
 	return ordersResponseByte, err
 }
+
+
+/*
+***************************
+position
+***************************
+*/
+// body=$(cat << EOF
+// {
+//   "longUnits": "ALL"
+// }
+// EOF
+// )
+//
+// curl \
+//   -X PUT \
+//   -H "Content-Type: application/json" \
+//   -H "Authorization: Bearer 9fd32dee7bac39d8af58cd654b193b61-f6c942e3a94280431256657ffe9d9a70" \
+//   -d "$body" \
+//   "https://api-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/positions/EUR_USD/close"
+//    https://api-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/positions/EUR_USD/close
+
+//Close contains the number of longUnits and shortUnits to close for the instrument
+type Close struct {
+	LongUnits string `json:"longUnits"`
+	ShortUnits string `json:"shortUnits"`
+}
+
+	//ClosePositions closes all positions for instrument
+	func ClosePositions(instrument string) ([]byte, error) {
+		close := Close{LongUnits: "ALL", ShortUnits: "ALL"}
+		fmt.Println("###########################")
+		fmt.Println(close)
+		fmt.Println("###########################")
+
+    longAndShort := MarshalClosePositions(close)
+		body := bytes.NewBuffer(longAndShort)
+		client := &http.Client{}
+
+		req, err := http.NewRequest("PUT", oandaURL+"/accounts/"+accountID+
+			                          "/positions/"+instrument+"/close", body)
+
+		fmt.Println(req)
+
+		req.Header.Set("Authorization", bearer)
+		req.Header.Set("content-type", "application/json")
+
+		if err != nil {
+			return []byte{}, err
+		}
+
+		resp, err := client.Do(req)
+
+		if err != nil {
+			return []byte{}, err
+		}
+
+		defer resp.Body.Close()
+
+		positionsResponseByte, _ := ioutil.ReadAll(resp.Body)
+
+		if err != nil {
+			return []byte{}, err
+		}
+
+		return positionsResponseByte, err
+	}
