@@ -16,3 +16,14 @@ func MarshalOrders(orders Orders) []byte {
 
 	return ordersByte
 }
+
+//MarshalClosePositions marshals Close data into []byte for making API requests
+func MarshalClosePositions(close Close) []byte {
+	closePositionsByte, err := json.Marshal(close)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return closePositionsByte
+}
