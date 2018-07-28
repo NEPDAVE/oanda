@@ -132,6 +132,42 @@ orders
 ***************************
 */
 
+type OrderSubmission struct {
+	LastTransactionID      string `json:"lastTransactionID"`
+	OrderCreateTransaction OrderCreateTransaction
+}
+
+type OrderCreateTransaction struct {
+	AccountID             string         `json:"accountID"`
+	BatchID               string         `json:"batchID"`
+	ID                    string         `json:"id"`
+	Instrument            string         `json:"instrument"`
+	PositionFill          string         `json:"positionFill"`
+	Price                 string         `json:"price"`
+	Reason                string         `json:"reason"`
+	StopLossOnFill        StopLossOnFill `json:"stopLossOnFill"`
+	Time                  time.Time      `json:"time"`
+	TimeInForce           string         `json:"timeInForce"`
+	TriggerCondition      string         `json:"triggerCondition"`
+	Type                  string         `json:"type"`
+	Units                 string         `json:"units"`
+	UserID                string         `json:"userID"`
+	RelatedTransactionIDs []string       `json:"relatedTransactionIDs"`
+}
+
+//UnmarshalOrderSubmission unmarshals the returned data byte slice from Oanda
+//that contains the order data
+func (o OrderSubmission) UnmarshalOrderSubmission(ordersResponseByte []byte) *OrderSubmission {
+
+	err := json.Unmarshal(ordersResponseByte, &o)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return &o
+}
+
 /*
 
 FIXME this is an example response for submitting an order
@@ -160,4 +196,78 @@ FIXME this is an example response for submitting an order
     "6372"
   ]
 }
+
+
+{"orderCreateTransaction":{
+	"type":"MARKET_ORDER",
+	"instrument":"EUR_USD",
+	"units":"10",
+	"timeInForce":"FOK",
+	"positionFill":"DEFAULT",
+	"takeProfitOnFill":{
+		"price":"1.18372",
+		"timeInForce":"GTC"
+		},
+	"stopLossOnFill":{
+		"price":"1.16026",
+		"timeInForce":"GTC"
+		},
+	"reason":"CLIENT_ORDER",
+	"id":"7200",
+	"userID":6395930,
+	"accountID":"101-001-6395930-001",
+	"batchID":"7200",
+	"requestID":"78486291686830674",
+	"time":"2018-07-27T19:49:18.256694465Z"
+	},
+	"orderFillTransaction":{
+		"type":"ORDER_FILL",
+		"orderID":"7200",
+		"instrument":"EUR_USD",
+		"units":"10",
+		"price":"1.16623",
+		"pl":"0.0000",
+		"financing":"0.0000",
+		"commission":"0.0000",
+		"accountBalance":"100403.3955",
+		"gainQuoteHomeConversionFactor":"1",
+		"lossQuoteHomeConversionFactor":"1",
+		"guaranteedExecutionFee":"0.0000",
+		"halfSpreadCost":"0.0007",
+		"reason":"MARKET_ORDER",
+		"tradeOpened":{
+			"price":"1.16623",
+			"tradeID":"7201",
+			"units":"10",
+			"guaranteedExecutionFee":"0.0000",
+			"halfSpreadCost":"0.0007",
+			"initialMarginRequired":"0.2332"
+			},
+		"fullPrice":{
+			"closeoutBid":"1.16594",
+			"closeoutAsk":"1.16638",
+			"timestamp":"2018-07-27T19:49:17.090610310Z",
+			"bids":[{
+				"price":"1.16609",
+				"liquidity":"10000000"
+				}],
+			"asks":[{
+				"price":"1.16623",
+				"liquidity":"9999880"
+				}]
+				},
+			"id":"7201",
+			"userID":6395930,
+			"accountID":"101-001-6395930-001",
+			"batchID":"7200",
+			"requestID":"78486291686830674",
+			"time":"2018-07-27T19:49:18.256694465Z"
+			},
+			"relatedTransactionIDs":[
+				"7200",
+				"7201",
+				"7202",
+				"7203"
+				],
+			"lastTransactionID":"7203"}
 */
