@@ -3,12 +3,12 @@ package oanda
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
-	"fmt"
 )
 
 var oandaURL = os.Getenv("OANDA_URL")
@@ -179,7 +179,6 @@ func SubmitOrder(orders []byte) ([]byte, error) {
 	return ordersResponseByte, err
 }
 
-
 /*
 ***************************
 position
@@ -202,46 +201,46 @@ position
 
 //Close contains the number of longUnits and shortUnits to close for the instrument
 type Close struct {
-	LongUnits string `json:"longUnits"`
+	LongUnits  string `json:"longUnits"`
 	ShortUnits string `json:"shortUnits"`
 }
 
-	//ClosePositions closes all positions for instrument
-	func ClosePositions(instrument string) ([]byte, error) {
-		close := Close{LongUnits: "ALL", ShortUnits: "ALL"}
-		fmt.Println("###########################")
-		fmt.Println(close)
-		fmt.Println("###########################")
+//ClosePositions closes all positions for instrument
+func ClosePositions(instrument string) ([]byte, error) {
+	close := Close{LongUnits: "ALL", ShortUnits: "ALL"}
+	fmt.Println("###########################")
+	fmt.Println(close)
+	fmt.Println("###########################")
 
-    longAndShort := MarshalClosePositions(close)
-		body := bytes.NewBuffer(longAndShort)
-		client := &http.Client{}
+	longAndShort := MarshalClosePositions(close)
+	body := bytes.NewBuffer(longAndShort)
+	client := &http.Client{}
 
-		req, err := http.NewRequest("PUT", oandaURL+"/accounts/"+accountID+
-			                          "/positions/"+instrument+"/close", body)
+	req, err := http.NewRequest("PUT", oandaURL+"/accounts/"+accountID+
+		"/positions/"+instrument+"/close", body)
 
-		fmt.Println(req)
+	fmt.Println(req)
 
-		req.Header.Set("Authorization", bearer)
-		req.Header.Set("content-type", "application/json")
+	req.Header.Set("Authorization", bearer)
+	req.Header.Set("content-type", "application/json")
 
-		if err != nil {
-			return []byte{}, err
-		}
-
-		resp, err := client.Do(req)
-
-		if err != nil {
-			return []byte{}, err
-		}
-
-		defer resp.Body.Close()
-
-		positionsResponseByte, _ := ioutil.ReadAll(resp.Body)
-
-		if err != nil {
-			return []byte{}, err
-		}
-
-		return positionsResponseByte, err
+	if err != nil {
+		return []byte{}, err
 	}
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	defer resp.Body.Close()
+
+	positionsResponseByte, _ := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return positionsResponseByte, err
+}
