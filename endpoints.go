@@ -179,6 +179,43 @@ func SubmitOrder(orders []byte) ([]byte, error) {
 	return ordersResponseByte, err
 }
 
+
+//curl \
+//  -H "Content-Type: application/json" \
+//  -H "Authorization: Bearer 9fd32dee7bac39d8af58cd654b193b61-f6c942e3a94280431256657ffe9d9a70" \
+//  "https://api-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/orders/6372"
+
+
+//CheckOrder used to submit orders
+func CheckOrder(orderID string) ([]byte, error) {
+	client := &http.Client{}
+
+	req, err := http.NewRequest("GET", oandaURL+"/accounts/"+accountID+"/orders/"+orderID)
+
+	req.Header.Set("Authorization", bearer)
+	req.Header.Set("content-type", "application/json")
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	defer resp.Body.Close()
+
+	ordersResponseByte, _ := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return ordersResponseByte, err
+}
+
 /*
 ***************************
 position

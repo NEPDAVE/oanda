@@ -193,15 +193,15 @@ type TradeOpenedData struct {
 
 //FullPrice represents the data structure embedded in OrderFillTransactionData
 type FullPrice struct {
-	CloseoutBid string         `json:"closeoutBid"`
-	CloseoutAsk string         `json:"closeoutAsk"`
-	Time        time.Time      `json:"timestamp"`
-	Bids        []FullPriceBid `json:"bids"`
-	Asks        []FullPriceAsk `json:"asks"`
-	ID          string         `json:"id"`
-	UserID      string         `json:"userID"`
-	AccountID   string         `json:"accountID"`
-	BatchID     string         `json:"batchID"`
+	CloseoutBid string            `json:"closeoutBid"`
+	CloseoutAsk string            `json:"closeoutAsk"`
+	Time        time.Time         `json:"timestamp"`
+	Bids        []FullPriceBid    `json:"bids"`
+	Asks        []FullPriceAsk    `json:"asks"`
+	ID          string            `json:"id"`
+	UserID      string            `json:"userID"`
+	AccountID   string            `json:"accountID"`
+	BatchID     string            `json:"batchID"`
 }
 
 //FullPriceBid represents one element in the Bids list of a Prices Struct
@@ -218,7 +218,7 @@ type FullPriceAsk struct {
 	Liquidity string `json:"liquidity"`
 }
 
-//UnmarshalOrderCreateTransaction unmarshals the returned data byte slice from Oanda
+cd ..///UnmarshalOrderCreateTransaction unmarshals the returned data byte slice from Oanda
 //that contains the order data
 func (o OrderCreateTransaction) UnmarshalOrderCreateTransaction(
 	ordersResponseByte []byte) *OrderCreateTransaction {
