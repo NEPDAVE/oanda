@@ -132,32 +132,86 @@ orders
 ***************************
 */
 
-type OrderSubmission struct {
-	LastTransactionID      string `json:"lastTransactionID"`
-	OrderCreateTransaction OrderCreateTransaction
+type OrderCreateTransaction struct {
+	OrderCreateTransaction OrderCreateTransactionData `json:"orderCreateTransaction"`
+	OrderFillTransaction   OrderFillTransactionData   `json:"orderFillTransaction"`
 }
 
-type OrderCreateTransaction struct {
-	AccountID             string         `json:"accountID"`
-	BatchID               string         `json:"batchID"`
-	ID                    string         `json:"id"`
-	Instrument            string         `json:"instrument"`
-	PositionFill          string         `json:"positionFill"`
-	Price                 string         `json:"price"`
-	Reason                string         `json:"reason"`
-	StopLossOnFill        StopLossOnFill `json:"stopLossOnFill"`
-	Time                  time.Time      `json:"time"`
-	TimeInForce           string         `json:"timeInForce"`
-	TriggerCondition      string         `json:"triggerCondition"`
-	Type                  string         `json:"type"`
-	Units                 string         `json:"units"`
-	UserID                string         `json:"userID"`
-	RelatedTransactionIDs []string       `json:"relatedTransactionIDs"`
+type OrderCreateTransactionData struct {
+	Type             string           `json:"type"`
+	Instrument       string           `json:"instrument"`
+	Units            string           `json:"units"`
+	TimeInForce      string           `json:"timeInForce"`
+	PositionFill     string           `json:"positionFill"`
+	TakeProfitOnFill TakeProfitOnFill `json:"takeProfitOnFill"` //see orders.go
+	StopLossOnFill   StopLossOnFill   `json:"stopLossOnFill"`   //see orders.go
+	Reason           string           `json:"reason"`
+	ID               string           `json:"id"`
+	UserID           int              `json:"userID"`
+	AccountID        string           `json:"accountID"`
+	BatchID          string           `json:"batchID"`
+	RequestID        string           `json:"requestID"`
+	Time             time.Time        `json:"time"`
+}
+
+type OrderFillTransactionData struct {
+	Type                          string          `json:"type"`
+	OrderID                       string          `json:"orderID"`
+	Instrument                    string          `json:"instrument"`
+	Units                         string          `json:"units"`
+	Price                         string          `json:"price"`
+	PL                            string          `json:"pl"`
+	Financing                     string          `json:"financing"`
+	Commission                    string          `json:"commission"`
+	AccountBalance                string          `json:"accountBalance"`
+	GainQuoteHomeConversionFactor string          `json:"gainQuoteHomeConversionFactor"`
+	LossQuoteHomeConversionFactor string          `json:"lossQuoteHomeConversionFactor"`
+	HalfSpreadCost                string          `json:"halfSpreadCost"`
+	Reason                        string          `json:"reason"`
+	TradeOpened                   TradeOpenedData `json:"tradeOpened"`
+	FullPrice                     FullPrice       `json:"fullPrice"`
+	RelatedTransactionIDs         []string        `json:"relatedTransactionIDs"`
+	LastTransactionID             string          `json:"lastTransactionID"`
+}
+
+type TradeOpenedData struct {
+	Price                  string `json:"price"`
+	TradeID                string `json:"tradeID"`
+	Units                  string `json:"units"`
+	GuaranteedExecutionFee string `json:"guaranteedExecutionFee"`
+	HalfSpreadCost         string `json:"halfSpreadCost"`
+	InitialMarginRequired  string `json:"initialMarginRequired"`
+	LastTransactionID      string `json:"lastTransactionID"`
+}
+
+type FullPrice struct {
+	CloseoutBid string            `json:"closeoutBid"`
+	CloseoutAsk string            `json:"closeoutAsk"`
+	Time        time.Time         `json:"timestamp"`
+	Bids        []FullPriceAsk    `json:"bids"`
+	Asks        []FullPriceAskBid `json:"asks"`
+	ID          string            `json:"id"`
+	UserID      string            `json:"userID"`
+	AccountID   string            `json:"accountID"`
+	BatchID     string            `json:"batchID"`
+}
+
+//Ask represents one element in the Asks list of a Prices Struct
+type FullPriceAsk struct {
+	Price     string `json:"price"`
+	Liquidity string `json:"liquidity"`
+}
+
+//Bid represents one element in the Bids list of a Prices Struct
+type FullPriceAskBid struct {
+	Price     string `json:"price"`
+	Liquidity string `json:"liquidity"`
 }
 
 //UnmarshalOrderSubmission unmarshals the returned data byte slice from Oanda
 //that contains the order data
-func (o OrderSubmission) UnmarshalOrderSubmission(ordersResponseByte []byte) *OrderSubmission {
+func (o OrderCreateTransaction) UnmarshalOrderCreateTransaction(
+	ordersResponseByte []byte) *OrderCreateTransaction {
 
 	err := json.Unmarshal(ordersResponseByte, &o)
 
@@ -169,35 +223,6 @@ func (o OrderSubmission) UnmarshalOrderSubmission(ordersResponseByte []byte) *Or
 }
 
 /*
-
-FIXME this is an example response for submitting an order
-{
-  "lastTransactionID": "6372",
-  "orderCreateTransaction": {
-    "accountID": "<ACCOUNT>",
-    "batchID": "6372",
-    "id": "6372",
-    "instrument": "USD_CAD",
-    "positionFill": "DEFAULT",
-    "price": "1.50000",
-    "reason": "CLIENT_ORDER",
-    "stopLossOnFill": {
-      "price": "1.70000",
-      "timeInForce": "GTC"
-    },
-    "time": "2016-06-22T18:41:29.285982286Z",
-    "timeInForce": "GTC",
-    "triggerCondition": "TRIGGER_DEFAULT",
-    "type": "LIMIT_ORDER",
-    "units": "-1000",
-    "userID": <USERID>
-  },
-  "relatedTransactionIDs": [
-    "6372"
-  ]
-}
-
-
 {"orderCreateTransaction":{
 	"type":"MARKET_ORDER",
 	"instrument":"EUR_USD",
@@ -270,4 +295,59 @@ FIXME this is an example response for submitting an order
 				"7203"
 				],
 			"lastTransactionID":"7203"}
+
+
+
+type OrderSubmission struct {
+	LastTransactionID      string `json:"lastTransactionID"`
+	OrderCreateTransaction OrderCreateTransaction
+}
+
+type OrderCreateTransaction struct {
+	AccountID             string         `json:"accountID"`
+	BatchID               string         `json:"batchID"`
+	ID                    string         `json:"id"`
+	Instrument            string         `json:"instrument"`
+	PositionFill          string         `json:"positionFill"`
+	Price                 string         `json:"price"`
+	Reason                string         `json:"reason"`
+	StopLossOnFill        StopLossOnFill `json:"stopLossOnFill"`
+	Time                  time.Time      `json:"time"`
+	TimeInForce           string         `json:"timeInForce"`
+	TriggerCondition      string         `json:"triggerCondition"`
+	Type                  string         `json:"type"`
+	Units                 string         `json:"units"`
+	UserID                string         `json:"userID"`
+	RelatedTransactionIDs []string       `json:"relatedTransactionIDs"`
+}
+*/
+
+/*
+
+FIXME this is an example response for submitting an order?
+{
+  "lastTransactionID": "6372",
+  "orderCreateTransaction": {
+    "accountID": "<ACCOUNT>",
+    "batchID": "6372",
+    "id": "6372",
+    "instrument": "USD_CAD",
+    "positionFill": "DEFAULT",
+    "price": "1.50000",
+    "reason": "CLIENT_ORDER",
+    "stopLossOnFill": {
+      "price": "1.70000",
+      "timeInForce": "GTC"
+    },
+    "time": "2016-06-22T18:41:29.285982286Z",
+    "timeInForce": "GTC",
+    "triggerCondition": "TRIGGER_DEFAULT",
+    "type": "LIMIT_ORDER",
+    "units": "-1000",
+    "userID": <USERID>
+  },
+  "relatedTransactionIDs": [
+    "6372"
+  ]
+}
 */
