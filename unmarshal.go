@@ -193,27 +193,27 @@ type TradeOpenedData struct {
 
 //FullPrice represents the data structure embedded in OrderFillTransactionData
 type FullPrice struct {
-	CloseoutBid string            `json:"closeoutBid"`
-	CloseoutAsk string            `json:"closeoutAsk"`
-	Time        time.Time         `json:"timestamp"`
-	Bids        []FullPriceAsk    `json:"bids"`
-	Asks        []FullPriceAskBid `json:"asks"`
-	ID          string            `json:"id"`
-	UserID      string            `json:"userID"`
-	AccountID   string            `json:"accountID"`
-	BatchID     string            `json:"batchID"`
-}
-
-//FullPriceAsk represents one element in the Asks list of a Prices Struct
-//this differs from Ask which has an int for Liquidity
-type FullPriceAsk struct {
-	Price     string `json:"price"`
-	Liquidity string `json:"liquidity"`
+	CloseoutBid string         `json:"closeoutBid"`
+	CloseoutAsk string         `json:"closeoutAsk"`
+	Time        time.Time      `json:"timestamp"`
+	Bids        []FullPriceBid `json:"bids"`
+	Asks        []FullPriceAsk `json:"asks"`
+	ID          string         `json:"id"`
+	UserID      string         `json:"userID"`
+	AccountID   string         `json:"accountID"`
+	BatchID     string         `json:"batchID"`
 }
 
 //FullPriceBid represents one element in the Bids list of a Prices Struct
 //this differs from Bid which has an int for Liquidity
 type FullPriceBid struct {
+	Price     string `json:"price"`
+	Liquidity string `json:"liquidity"`
+}
+
+//FullPriceAsk represents one element in the Asks list of a Prices Struct
+//this differs from Ask which has an int for Liquidity
+type FullPriceAsk struct {
 	Price     string `json:"price"`
 	Liquidity string `json:"liquidity"`
 }
@@ -231,133 +231,3 @@ func (o OrderCreateTransaction) UnmarshalOrderCreateTransaction(
 
 	return &o
 }
-
-/*
-{"orderCreateTransaction":{
-	"type":"MARKET_ORDER",
-	"instrument":"EUR_USD",
-	"units":"10",
-	"timeInForce":"FOK",
-	"positionFill":"DEFAULT",
-	"takeProfitOnFill":{
-		"price":"1.18372",
-		"timeInForce":"GTC"
-		},
-	"stopLossOnFill":{
-		"price":"1.16026",
-		"timeInForce":"GTC"
-		},
-	"reason":"CLIENT_ORDER",
-	"id":"7200",
-	"userID":6395930,
-	"accountID":"101-001-6395930-001",
-	"batchID":"7200",
-	"requestID":"78486291686830674",
-	"time":"2018-07-27T19:49:18.256694465Z"
-	},
-	"orderFillTransaction":{
-		"type":"ORDER_FILL",
-		"orderID":"7200",
-		"instrument":"EUR_USD",
-		"units":"10",
-		"price":"1.16623",
-		"pl":"0.0000",
-		"financing":"0.0000",
-		"commission":"0.0000",
-		"accountBalance":"100403.3955",
-		"gainQuoteHomeConversionFactor":"1",
-		"lossQuoteHomeConversionFactor":"1",
-		"guaranteedExecutionFee":"0.0000",
-		"halfSpreadCost":"0.0007",
-		"reason":"MARKET_ORDER",
-		"tradeOpened":{
-			"price":"1.16623",
-			"tradeID":"7201",
-			"units":"10",
-			"guaranteedExecutionFee":"0.0000",
-			"halfSpreadCost":"0.0007",
-			"initialMarginRequired":"0.2332"
-			},
-		"fullPrice":{
-			"closeoutBid":"1.16594",
-			"closeoutAsk":"1.16638",
-			"timestamp":"2018-07-27T19:49:17.090610310Z",
-			"bids":[{
-				"price":"1.16609",
-				"liquidity":"10000000"
-				}],
-			"asks":[{
-				"price":"1.16623",
-				"liquidity":"9999880"
-				}]
-				},
-			"id":"7201",
-			"userID":6395930,
-			"accountID":"101-001-6395930-001",
-			"batchID":"7200",
-			"requestID":"78486291686830674",
-			"time":"2018-07-27T19:49:18.256694465Z"
-			},
-			"relatedTransactionIDs":[
-				"7200",
-				"7201",
-				"7202",
-				"7203"
-				],
-			"lastTransactionID":"7203"}
-
-
-
-type OrderSubmission struct {
-	LastTransactionID      string `json:"lastTransactionID"`
-	OrderCreateTransaction OrderCreateTransaction
-}
-
-type OrderCreateTransaction struct {
-	AccountID             string         `json:"accountID"`
-	BatchID               string         `json:"batchID"`
-	ID                    string         `json:"id"`
-	Instrument            string         `json:"instrument"`
-	PositionFill          string         `json:"positionFill"`
-	Price                 string         `json:"price"`
-	Reason                string         `json:"reason"`
-	StopLossOnFill        StopLossOnFill `json:"stopLossOnFill"`
-	Time                  time.Time      `json:"time"`
-	TimeInForce           string         `json:"timeInForce"`
-	TriggerCondition      string         `json:"triggerCondition"`
-	Type                  string         `json:"type"`
-	Units                 string         `json:"units"`
-	UserID                string         `json:"userID"`
-	RelatedTransactionIDs []string       `json:"relatedTransactionIDs"`
-}
-*/
-
-/*
-
-FIXME this is an example response for submitting an order?
-{
-  "lastTransactionID": "6372",
-  "orderCreateTransaction": {
-    "accountID": "<ACCOUNT>",
-    "batchID": "6372",
-    "id": "6372",
-    "instrument": "USD_CAD",
-    "positionFill": "DEFAULT",
-    "price": "1.50000",
-    "reason": "CLIENT_ORDER",
-    "stopLossOnFill": {
-      "price": "1.70000",
-      "timeInForce": "GTC"
-    },
-    "time": "2016-06-22T18:41:29.285982286Z",
-    "timeInForce": "GTC",
-    "triggerCondition": "TRIGGER_DEFAULT",
-    "type": "LIMIT_ORDER",
-    "units": "-1000",
-    "userID": <USERID>
-  },
-  "relatedTransactionIDs": [
-    "6372"
-  ]
-}
-*/
