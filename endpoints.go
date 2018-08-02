@@ -58,6 +58,7 @@ func StreamPricing(instruments string, out chan StreamResult) {
 
 	for {
 		line, err := reader.ReadBytes('\n')
+		fmt.Println(string(line))
 		if err != nil {
 			out <- StreamResult{Error: err}
 		}
@@ -148,8 +149,8 @@ orders
 ***************************
 */
 
-//SubmitOrder used to submit orders
-func SubmitOrder(orders []byte) ([]byte, error) {
+//CreateOrder used to submit orders
+func CreateOrder(orders []byte) ([]byte, error) {
 	body := bytes.NewBuffer(orders)
 	client := &http.Client{}
 
@@ -170,13 +171,13 @@ func SubmitOrder(orders []byte) ([]byte, error) {
 
 	defer resp.Body.Close()
 
-	ordersResponseByte, _ := ioutil.ReadAll(resp.Body)
+	createOrderByte, _ := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
 		return []byte{}, err
 	}
 
-	return ordersResponseByte, err
+	return createOrderByte, err
 }
 
 
@@ -185,15 +186,15 @@ func SubmitOrder(orders []byte) ([]byte, error) {
 //  -H "Authorization: Bearer 9fd32dee7bac39d8af58cd654b193b61-f6c942e3a94280431256657ffe9d9a70" \
 //  "https://api-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/orders/6372"
 
-
-//CheckOrder used to submit orders
+//CheckOrder gets information on single order
 func CheckOrder(orderID string) ([]byte, error) {
 	client := &http.Client{}
 
-	req, err := http.NewRequest("GET", oandaURL+"/accounts/"+accountID+"/orders/"+orderID)
+  req, err := http.NewRequest("GET", oandaURL+"/accounts/"+accountID+
+		"/orders/"+orderID, nil)
 
-	req.Header.Set("Authorization", bearer)
-	req.Header.Set("content-type", "application/json")
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", bearer)
 
 	if err != nil {
 		return []byte{}, err
@@ -207,13 +208,13 @@ func CheckOrder(orderID string) ([]byte, error) {
 
 	defer resp.Body.Close()
 
-	ordersResponseByte, _ := ioutil.ReadAll(resp.Body)
+	checkOrderByte, _ := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
 		return []byte{}, err
 	}
 
-	return ordersResponseByte, err
+	return checkOrderByte, err
 }
 
 /*

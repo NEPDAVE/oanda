@@ -2,8 +2,32 @@ package oanda
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 )
+
+/*
+***************************
+errors
+***************************
+*/
+
+//ErrorCode captures an Oanda error code returned by their API
+type ErrorCode struct {
+	Code int `json:"code"`
+}
+
+//UnmarshalErrorCode used by StreamPricing
+func (e ErrorCode) UnmarshalErrorCode(errorByte []byte) *ErrorCode {
+
+	err := json.Unmarshal(errorByte, &e)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return &e
+}
 
 /*
 ***************************
@@ -23,7 +47,7 @@ func (h Heartbeat) UnmarshalHeartbeat(heartbeatByte []byte) *Heartbeat {
 	err := json.Unmarshal(heartbeatByte, &h)
 
 	if err != nil {
-		panic(err)
+		log.Println(ErrorCode{}.UnmarshalErrorCode(heartbeatByte))
 	}
 
 	return &h
@@ -66,7 +90,7 @@ func (p Prices) UnmarshalPrices(priceByte []byte) *Prices {
 	err := json.Unmarshal(priceByte, &p)
 
 	if err != nil {
-		panic(err)
+		log.Println(ErrorCode{}.UnmarshalErrorCode(priceByte))
 	}
 
 	return &p
@@ -78,7 +102,7 @@ func (p Pricing) UnmarshalPricing(priceByte []byte) *Pricing {
 	err := json.Unmarshal(priceByte, &p)
 
 	if err != nil {
-		panic(err)
+		log.Println(ErrorCode{}.UnmarshalErrorCode(priceByte))
 	}
 
 	return &p
@@ -115,12 +139,12 @@ type Mid struct {
 }
 
 //UnmarshalCandles unmarshals History data byte slice from Oanda
-func (c Candles) UnmarshalCandles(priceByte []byte) *Candles {
+func (c Candles) UnmarshalCandles(candlesByte []byte) *Candles {
 
-	err := json.Unmarshal(priceByte, &c)
+	err := json.Unmarshal(candlesByte, &c)
 
 	if err != nil {
-		panic(err)
+		log.Println(ErrorCode{}.UnmarshalErrorCode(candlesByte))
 	}
 
 	return &c
@@ -218,7 +242,7 @@ type FullPriceAsk struct {
 	Liquidity string `json:"liquidity"`
 }
 
-cd ..///UnmarshalOrderCreateTransaction unmarshals the returned data byte slice from Oanda
+//UnmarshalOrderCreateTransaction unmarshals the returned data byte slice from Oanda
 //that contains the order data
 func (o OrderCreateTransaction) UnmarshalOrderCreateTransaction(
 	ordersResponseByte []byte) *OrderCreateTransaction {
@@ -226,7 +250,7 @@ func (o OrderCreateTransaction) UnmarshalOrderCreateTransaction(
 	err := json.Unmarshal(ordersResponseByte, &o)
 
 	if err != nil {
-		panic(err)
+		log.Println(ErrorCode{}.UnmarshalErrorCode(ordersResponseByte))
 	}
 
 	return &o
