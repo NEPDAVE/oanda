@@ -2,7 +2,7 @@ package oanda
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"time"
 )
 
