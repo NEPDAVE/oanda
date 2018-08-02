@@ -184,20 +184,6 @@ func SubmitOrder(orders []byte) ([]byte, error) {
 position
 ***************************
 */
-// body=$(cat << EOF
-// {
-//   "longUnits": "ALL"
-// }
-// EOF
-// )
-//
-// curl \
-//   -X PUT \
-//   -H "Content-Type: application/json" \
-//   -H "Authorization: Bearer 9fd32dee7bac39d8af58cd654b193b61-f6c942e3a94280431256657ffe9d9a70" \
-//   -d "$body" \
-//   "https://api-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/positions/EUR_USD/close"
-//    https://api-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/positions/EUR_USD/close
 
 //Close contains the number of longUnits and shortUnits to close for the instrument
 type Close struct {
