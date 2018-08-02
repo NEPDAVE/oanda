@@ -132,11 +132,15 @@ orders
 ***************************
 */
 
+//OrderCreateTransaction represents the data structure returned by oanda after
+//submiting an order
 type OrderCreateTransaction struct {
 	OrderCreateTransaction OrderCreateTransactionData `json:"orderCreateTransaction"`
 	OrderFillTransaction   OrderFillTransactionData   `json:"orderFillTransaction"`
 }
 
+//OrderCreateTransactionData represents the data structure embedded in
+//OrderCreateTransaction
 type OrderCreateTransactionData struct {
 	Type             string           `json:"type"`
 	Instrument       string           `json:"instrument"`
@@ -154,6 +158,8 @@ type OrderCreateTransactionData struct {
 	Time             time.Time        `json:"time"`
 }
 
+//OrderFillTransactionData represents the data structure embedded in
+//OrderCreateTransaction
 type OrderFillTransactionData struct {
 	Type                          string          `json:"type"`
 	OrderID                       string          `json:"orderID"`
@@ -174,6 +180,7 @@ type OrderFillTransactionData struct {
 	LastTransactionID             string          `json:"lastTransactionID"`
 }
 
+//TradeOpenedData represents the data structure embedded in OrderFillTransactionData
 type TradeOpenedData struct {
 	Price                  string `json:"price"`
 	TradeID                string `json:"tradeID"`
@@ -184,6 +191,7 @@ type TradeOpenedData struct {
 	LastTransactionID      string `json:"lastTransactionID"`
 }
 
+//FullPrice represents the data structure embedded in OrderFillTransactionData
 type FullPrice struct {
 	CloseoutBid string            `json:"closeoutBid"`
 	CloseoutAsk string            `json:"closeoutAsk"`
@@ -196,19 +204,21 @@ type FullPrice struct {
 	BatchID     string            `json:"batchID"`
 }
 
-//Ask represents one element in the Asks list of a Prices Struct
+//FullPriceAsk represents one element in the Asks list of a Prices Struct
+//this differs from Ask which has an int for Liquidity
 type FullPriceAsk struct {
 	Price     string `json:"price"`
 	Liquidity string `json:"liquidity"`
 }
 
-//Bid represents one element in the Bids list of a Prices Struct
-type FullPriceAskBid struct {
+//FullPriceBid represents one element in the Bids list of a Prices Struct
+//this differs from Bid which has an int for Liquidity
+type FullPriceBid struct {
 	Price     string `json:"price"`
 	Liquidity string `json:"liquidity"`
 }
 
-//UnmarshalOrderSubmission unmarshals the returned data byte slice from Oanda
+//UnmarshalOrderCreateTransaction unmarshals the returned data byte slice from Oanda
 //that contains the order data
 func (o OrderCreateTransaction) UnmarshalOrderCreateTransaction(
 	ordersResponseByte []byte) *OrderCreateTransaction {
