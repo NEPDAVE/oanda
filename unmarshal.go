@@ -255,3 +255,24 @@ func (o OrderCreateTransaction) UnmarshalOrderCreateTransaction(
 
 	return &o
 }
+
+/*
+STRING CHECK ORDER BYTE:
+
+{"orders":[{
+	"id":"24",
+	"createTime":"2017-08-17T15:39:32.988772445Z",
+	"type":"LIMIT",
+	"instrument":"USD_CAD",
+	"units":"-1000",
+	"timeInForce":"GTC","stopLossOnFill":{
+		"price":"1.70000","timeInForce":"GTC"
+		},
+	"price":"1.50000",
+	"triggerCondition":"DEFAULT",
+	"partialFill":"DEFAULT_FILL",
+	"positionFill":"DEFAULT",
+	"state":"PENDING"
+	}],
+	"lastTransactionID":"9902"}
+	*/
