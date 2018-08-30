@@ -217,15 +217,15 @@ type TradeOpenedData struct {
 
 //FullPrice represents the data structure embedded in OrderFillTransactionData
 type FullPrice struct {
-	CloseoutBid string            `json:"closeoutBid"`
-	CloseoutAsk string            `json:"closeoutAsk"`
-	Time        time.Time         `json:"timestamp"`
-	Bids        []FullPriceBid    `json:"bids"`
-	Asks        []FullPriceAsk    `json:"asks"`
-	ID          string            `json:"id"`
-	UserID      string            `json:"userID"`
-	AccountID   string            `json:"accountID"`
-	BatchID     string            `json:"batchID"`
+	CloseoutBid string         `json:"closeoutBid"`
+	CloseoutAsk string         `json:"closeoutAsk"`
+	Time        time.Time      `json:"timestamp"`
+	Bids        []FullPriceBid `json:"bids"`
+	Asks        []FullPriceAsk `json:"asks"`
+	ID          string         `json:"id"`
+	UserID      string         `json:"userID"`
+	AccountID   string         `json:"accountID"`
+	BatchID     string         `json:"batchID"`
 }
 
 //FullPriceBid represents one element in the Bids list of a Prices Struct
@@ -256,6 +256,44 @@ func (o OrderCreateTransaction) UnmarshalOrderCreateTransaction(
 	return &o
 }
 
+//OrderStatus represents the data structure returned by Oanda after calling the
+//fxtech.GetOrderStatus func
+type OrderStatus struct {
+	OrderStatusData   []OrderStatusData
+	LastTransactionID string
+}
+
+//OrderStatusData represents the
+type OrderStatusData struct {
+	ID               string
+	CreateTime       time.Time
+	Type             string
+	Instrument       string
+	Units            string
+	TimeInForce      string
+	StopLossOnFill   StopLossOnFill
+	TakeProfitOnFill TakeProfitOnFill
+	Price            string
+	TriggerCondition string
+	PartialFill      string
+	PositionFill     string
+	State            string
+}
+
+//UnmarshalOrderStatus unmarshals the returned data byte slice from Oanda
+//after calling the fxtech.GetOrderStatus func
+func (o OrderStatus) UnmarshalOrderStatus(
+	getOrderStatusByte []byte) *OrderStatus {
+
+	err := json.Unmarshal(getOrderStatusByte, &o)
+
+	if err != nil {
+		log.Println(ErrorCode{}.UnmarshalErrorCode(getOrderStatusByte))
+	}
+
+	return &o
+}
+
 /*
 STRING CHECK ORDER BYTE:
 
@@ -265,7 +303,8 @@ STRING CHECK ORDER BYTE:
 	"type":"LIMIT",
 	"instrument":"USD_CAD",
 	"units":"-1000",
-	"timeInForce":"GTC","stopLossOnFill":{
+	"timeInForce":"GTC",
+	"stopLossOnFill":{
 		"price":"1.70000","timeInForce":"GTC"
 		},
 	"price":"1.50000",
@@ -275,4 +314,4 @@ STRING CHECK ORDER BYTE:
 	"state":"PENDING"
 	}],
 	"lastTransactionID":"9902"}
-	*/
+*/

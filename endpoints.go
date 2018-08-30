@@ -180,17 +180,16 @@ func CreateOrder(orders []byte) ([]byte, error) {
 	return createOrderByte, err
 }
 
-
 //curl \
 //  -H "Content-Type: application/json" \
 //  -H "Authorization: Bearer 9fd32dee7bac39d8af58cd654b193b61-f6c942e3a94280431256657ffe9d9a70" \
 //  "https://api-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/orders/6372"
 
-//CheckOrder gets information on single order
-func CheckOrder(orderID string) ([]byte, error) {
+//GetOrderStatus gets information on single order
+func GetOrderStatus(orderID string) ([]byte, error) {
 	client := &http.Client{}
 
-  req, err := http.NewRequest("GET", oandaURL+"/accounts/"+accountID+
+	req, err := http.NewRequest("GET", oandaURL+"/accounts/"+accountID+
 		"/orders/"+orderID, nil)
 
 	req.Header.Add("Content-Type", "application/json")
@@ -208,13 +207,13 @@ func CheckOrder(orderID string) ([]byte, error) {
 
 	defer resp.Body.Close()
 
-	checkOrderByte, _ := ioutil.ReadAll(resp.Body)
+	getOrderStatusByte, _ := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
 		return []byte{}, err
 	}
 
-	return checkOrderByte, err
+	return getOrderStatusByte, err
 }
 
 /*
