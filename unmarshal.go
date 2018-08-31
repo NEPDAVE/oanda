@@ -259,25 +259,25 @@ func (o OrderCreateTransaction) UnmarshalOrderCreateTransaction(
 //OrderStatus represents the data structure returned by Oanda after calling the
 //fxtech.GetOrderStatus func
 type OrderStatus struct {
-	OrderStatusData   []OrderStatusData
-	LastTransactionID string
+	OrderStatusData   []OrderStatusData `json:"orders"`
+	LastTransactionID string            `json:"lastTransactionID"`
 }
 
 //OrderStatusData represents the
 type OrderStatusData struct {
-	ID               string
-	CreateTime       time.Time
-	Type             string
-	Instrument       string
-	Units            string
-	TimeInForce      string
-	StopLossOnFill   StopLossOnFill
-	TakeProfitOnFill TakeProfitOnFill
-	Price            string
-	TriggerCondition string
-	PartialFill      string
-	PositionFill     string
-	State            string
+	ID               string           `json:"id"`
+	CreateTime       time.Time        `json:"createTime"`
+	Type             string           `json:"type"`
+	Instrument       string           `json:"instrument"`
+	Units            string           `json:"units"`
+	TimeInForce      string           `json:"timeInForce"`
+	StopLossOnFill   StopLossOnFill   `json:"stopLossOnFill"`
+	TakeProfitOnFill TakeProfitOnFill `json:"takeProfitOnFill"`
+	Price            string           `json:"price"`
+	TriggerCondition string           `json:"triggerCondition"`
+	PartialFill      string           `json:"partialFill"`
+	PositionFill     string           `json:"positionFill"`
+	State            string           `json:"state"`
 }
 
 //UnmarshalOrderStatus unmarshals the returned data byte slice from Oanda
