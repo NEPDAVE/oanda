@@ -189,10 +189,11 @@ curl \
 */
 
 //CancelOrder used to submit orders
-func CancelOrder(orders []byte) ([]byte, error) {
+func CancelOrder(OrderID string) ([]byte, error) {
 	client := &http.Client{}
 
-	req, err := http.NewRequest("PUT", oandaURL+"/accounts/"+accountID+"/orders", nil)
+	req, err := http.NewRequest("PUT", oandaURL+"/accounts/"+accountID+
+		"/orders/"+OrderID+"/cancel", nil)
 
 	req.Header.Set("Authorization", bearer)
 	req.Header.Set("content-type", "application/json")
@@ -209,15 +210,14 @@ func CancelOrder(orders []byte) ([]byte, error) {
 
 	defer resp.Body.Close()
 
-	createOrderByte, _ := ioutil.ReadAll(resp.Body)
+	cancelOrderByte, _ := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
 		return []byte{}, err
 	}
 
-	return createOrderByte, err
+	return cancelOrderByte, err
 }
-
 
 //curl \
 //  -H "Content-Type: application/json" \
