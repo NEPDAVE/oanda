@@ -13,7 +13,7 @@ orders
 
 //Orders represents entire order(s) object when creating an Oanda order
 type Orders struct {
-	OrderData Order `json:"order"`
+	Order Order `json:"order"`
 }
 
 //Order represents single order to Oanda
