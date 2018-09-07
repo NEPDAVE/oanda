@@ -294,6 +294,30 @@ func (o OrderStatus) UnmarshalOrderState(
 	return &o
 }
 
+type OrderCancelTransaction struct{
+	Type string `json:"type"`
+	OrderID string `json:"orderID"`
+	Reason string `json:"reason"`
+	ID string `json:"id"`
+	AccountID string `json:"accountID"`
+	UserID string `json:"userID"`
+	Batch
+}
+{"orderCancelTransaction":{
+	"type":"ORDER_CANCEL",
+	"orderID":"10307",
+	"reason":"CLIENT_REQUEST",
+	"id":"10308",
+	"accountID":"101-001-6395930-001",
+	"userID":6395930,
+	"batchID":"10308",
+	"requestID":"24458086831732667",
+	"time":"2018-09-07T04:36:53.627343343Z"
+		},
+	"relatedTransactionIDs":["10308"],
+	"lastTransactionID":"10308"
+}
+
 /*
 String Unmarshal Order Status:
 {"order": {
