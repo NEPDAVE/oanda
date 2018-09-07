@@ -260,7 +260,7 @@ func (o OrderCreateTransaction) UnmarshalOrderCreateTransaction(
 //fxtech.GetOrderStatus func
 type OrderStatus struct {
 	OrderStatusData   OrderStatusData `json:"order"`
-	LastTransactionID string            `json:"lastTransactionID"`
+	LastTransactionID string          `json:"lastTransactionID"`
 }
 
 //OrderStatusData represents the
@@ -294,15 +294,40 @@ func (o OrderStatus) UnmarshalOrderState(
 	return &o
 }
 
-type OrderCancelTransaction struct{
-	Type string `json:"type"`
-	OrderID string `json:"orderID"`
-	Reason string `json:"reason"`
-	ID string `json:"id"`
-	AccountID string `json:"accountID"`
-	UserID string `json:"userID"`
-	Batch
+type OrderCancelTransaction struct {
+	OrderCancelTransactionData OrderCancelTransactionData `json:"orderCancelTransaction"`
+	RelatedTransactionIDs      []string                   `json:"relatedTransactionIDs"`
+	LastTransactionID          string                     `json:"lastTransactionID"`
 }
+
+type OrderCancelTransactionData struct {
+	Type      string    `json:"type"`
+	OrderID   string    `json:"orderID"`
+	Reason    string    `json:"reason"`
+	ID        string    `json:"id"`
+	AccountID string    `json:"accountID"`
+	UserID    int       `json:"userID"`
+	BatchID   string    `json:"batchID"`
+	RequestID string    `json:"requestID"`
+	Time      time.Time `json:"time"`
+}
+
+//UnmarshalOrderCancelTransaction unmarshals the returned data byte slice from
+//Oanada after calling the fxtech.CancelOrder func
+func (o OrderCancelTransaction) UnmarshalOrderCancelTransaction(
+	cancelOrderByte []byte) *OrderCancelTransaction {
+
+	err := json.Unmarshal(cancelOrderByte, &o)
+
+	if err != nil {
+		log.Println(ErrorCode{}.UnmarshalErrorCode(cancelOrderByte))
+	}
+
+	return &o
+}
+
+/*
+
 {"orderCancelTransaction":{
 	"type":"ORDER_CANCEL",
 	"orderID":"10307",
@@ -318,7 +343,7 @@ type OrderCancelTransaction struct{
 	"lastTransactionID":"10308"
 }
 
-/*
+
 String Unmarshal Order Status:
 {"order": {
 	"id":"9993",
