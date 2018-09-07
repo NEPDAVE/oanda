@@ -259,7 +259,7 @@ func (o OrderCreateTransaction) UnmarshalOrderCreateTransaction(
 //OrderStatus represents the data structure returned by Oanda after calling the
 //fxtech.GetOrderStatus func
 type OrderStatus struct {
-	OrderStatusData   []OrderStatusData `json:"orders"`
+	OrderStatusData   OrderStatusData `json:"order"`
 	LastTransactionID string            `json:"lastTransactionID"`
 }
 
@@ -282,7 +282,7 @@ type OrderStatusData struct {
 
 //UnmarshalOrderStatus unmarshals the returned data byte slice from Oanda
 //after calling the fxtech.GetOrderStatus func
-func (o OrderStatus) UnmarshalOrderStatus(
+func (o OrderStatus) UnmarshalOrderState(
 	getOrderStatusByte []byte) *OrderStatus {
 
 	err := json.Unmarshal(getOrderStatusByte, &o)
@@ -295,23 +295,25 @@ func (o OrderStatus) UnmarshalOrderStatus(
 }
 
 /*
-STRING CHECK ORDER BYTE:
-
-{"orders":[{
-	"id":"24",
-	"createTime":"2017-08-17T15:39:32.988772445Z",
+String Unmarshal Order Status:
+{"order": {
+	"id":"9993",
+	"createTime":"2018-09-07T01:41:30.453248834Z",
 	"type":"LIMIT",
-	"instrument":"USD_CAD",
-	"units":"-1000",
+	"instrument":"GBP_USD",
+	"units":"2",
 	"timeInForce":"GTC",
-	"stopLossOnFill":{
-		"price":"1.70000","timeInForce":"GTC"
+	"takeProfitOnFill":{
+		"price":"1.28794","timeInForce":"GTC"
 		},
-	"price":"1.50000",
+	"stopLossOnFill":{
+		"price":"1.29194",
+		"timeInForce":"GTC"},
+	"price":"1.29094",
 	"triggerCondition":"DEFAULT",
 	"partialFill":"DEFAULT_FILL",
 	"positionFill":"DEFAULT",
-	"state":"PENDING"
-	}],
-	"lastTransactionID":"9902"}
+	"state":"PENDING"},
+	"lastTransactionID":"9993"}
+
 */

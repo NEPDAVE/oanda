@@ -225,7 +225,7 @@ func CancelOrder(OrderID string) ([]byte, error) {
 //  "https://api-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/orders/6372"
 
 //GetOrderStatus gets information on single order
-func GetOrderStatus(orderID string) ([]byte, error) {
+func GetOrderData(orderID string) ([]byte, error) {
 	client := &http.Client{}
 
 	req, err := http.NewRequest("GET", oandaURL+"/accounts/"+accountID+

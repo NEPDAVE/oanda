@@ -18,7 +18,7 @@ type Orders struct {
 
 //Order represents single order to Oanda
 type Order struct {
-	Price            string           `json:"prices"`
+	Price            string           `json:"price"`
 	StopLossOnFill   StopLossOnFill   `json:"stopLossOnFill"`
 	TakeProfitOnFill TakeProfitOnFill `json:"takeProfitOnFill"`
 	TimeInForce      string           `json:"timeInForce"`
