@@ -256,15 +256,15 @@ func (o OrderCreateTransaction) UnmarshalOrderCreateTransaction(
 	return &o
 }
 
-//OrderStatus represents the data structure returned by Oanda after calling the
-//fxtech.GetOrderStatus func
-type OrderStatus struct {
-	OrderStatusData   OrderStatusData `json:"order"`
-	LastTransactionID string          `json:"lastTransactionID"`
+//Order represents the data structure returned by Oanda after calling
+//fxtech.GetOrder()
+type Order struct {
+	OrderData         OrderData `json:"order"`
+	LastTransactionID string    `json:"lastTransactionID"`
 }
 
-//OrderStatusData represents the
-type OrderStatusData struct {
+//OrderData represents the
+type OrderData struct {
 	ID               string           `json:"id"`
 	CreateTime       time.Time        `json:"createTime"`
 	Type             string           `json:"type"`
@@ -280,15 +280,15 @@ type OrderStatusData struct {
 	State            string           `json:"state"`
 }
 
-//UnmarshalOrderStatus unmarshals the returned data byte slice from Oanda
+//UnmarshalOrder unmarshals the returned data byte slice from Oanda
 //after calling the fxtech.GetOrderStatus func
-func (o OrderStatus) UnmarshalOrderState(
-	getOrderStatusByte []byte) *OrderStatus {
+func (o Order) UnmarshalOrder(
+	getOrderByte []byte) *Order {
 
-	err := json.Unmarshal(getOrderStatusByte, &o)
+	err := json.Unmarshal(getOrderByte, &o)
 
 	if err != nil {
-		log.Println(ErrorCode{}.UnmarshalErrorCode(getOrderStatusByte))
+		log.Println(ErrorCode{}.UnmarshalErrorCode(getOrderByte))
 	}
 
 	return &o
@@ -364,5 +364,11 @@ String Unmarshal Order Status:
 	"positionFill":"DEFAULT",
 	"state":"PENDING"},
 	"lastTransactionID":"9993"}
+
+	curl \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer 9fd32dee7bac39d8af58cd654b193b61-f6c942e3a94280431256657ffe9d9a70" \
+  "https://api-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/orders/10602"
+
 
 */

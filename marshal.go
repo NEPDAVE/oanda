@@ -11,13 +11,14 @@ orders
 ***************************
 */
 
-//Orders represents entire order(s) object when creating an Oanda order
-type Orders struct {
-	Order Order `json:"order"`
+//ClientOrders represents entire Orders object for submiting/creating Orders
+//with Oanda
+type ClientOrders struct {
+	Orders Orders `json:"order"`
 }
 
-//Order represents single order to Oanda
-type Order struct {
+//Orders represents single order to Oanda
+type Orders struct {
 	Price            string           `json:"price"`
 	StopLossOnFill   StopLossOnFill   `json:"stopLossOnFill"`
 	TakeProfitOnFill TakeProfitOnFill `json:"takeProfitOnFill"`
@@ -40,16 +41,16 @@ type TakeProfitOnFill struct {
 	Price       string `json:"price"`
 }
 
-//MarshalOrders marshals order data into []byte for making API requests
-func (o Orders) MarshalOrders(orders Orders) []byte {
+//MarshalClientOrders marshals order data into []byte for making API requests
+func (c ClientOrders) MarshalClientOrders(clientOrders ClientOrders) []byte {
 
-	ordersByte, err := json.Marshal(orders)
+	clientOrdersByte, err := json.Marshal(clientOrders)
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	return ordersByte
+	return clientOrdersByte
 }
 
 //MarshalClosePositions marshals Close data into []byte for making API requests

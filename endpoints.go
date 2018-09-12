@@ -224,8 +224,8 @@ func CancelOrder(OrderID string) ([]byte, error) {
 //  -H "Authorization: Bearer 9fd32dee7bac39d8af58cd654b193b61-f6c942e3a94280431256657ffe9d9a70" \
 //  "https://api-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/orders/6372"
 
-//GetOrderStatus gets information on single order
-func GetOrderData(orderID string) ([]byte, error) {
+//GetOrder gets information on single order
+func GetOrder(orderID string) ([]byte, error) {
 	client := &http.Client{}
 
 	req, err := http.NewRequest("GET", oandaURL+"/accounts/"+accountID+
@@ -246,13 +246,13 @@ func GetOrderData(orderID string) ([]byte, error) {
 
 	defer resp.Body.Close()
 
-	getOrderStatusByte, _ := ioutil.ReadAll(resp.Body)
+	getOrderByte, _ := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
 		return []byte{}, err
 	}
 
-	return getOrderStatusByte, err
+	return getOrderByte, err
 }
 
 /*
