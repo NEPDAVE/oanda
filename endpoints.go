@@ -223,6 +223,7 @@ func CancelOrder(OrderID string) ([]byte, error) {
 //  -H "Content-Type: application/json" \
 //  -H "Authorization: Bearer 9fd32dee7bac39d8af58cd654b193b61-f6c942e3a94280431256657ffe9d9a70" \
 //  "https://api-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/orders/6372"
+// my req  = https://api-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/orders/10650
 
 //GetOrder gets information on single order
 func GetOrder(orderID string) ([]byte, error) {
