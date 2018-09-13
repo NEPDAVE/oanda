@@ -241,6 +241,9 @@ func GetOrder(orderID string) ([]byte, error) {
 
 	resp, err := client.Do(req)
 
+	fmt.Println("GET ORDER STATUS CODE:")
+	fmt.Println(resp.StatusCode)
+
 	if err != nil {
 		return []byte{}, err
 	}
