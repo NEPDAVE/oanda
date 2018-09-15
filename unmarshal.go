@@ -163,7 +163,7 @@ type OrderCreateTransaction struct {
 	OrderFillTransaction   OrderFillTransactionData   `json:"orderFillTransaction"`
 }
 
-//OrderCreateTransactionData represents the data structure embedded in
+//OrderCreateTransactionData represents a data structure embedded in
 //OrderCreateTransaction
 type OrderCreateTransactionData struct {
 	Type             string           `json:"type"`
@@ -182,7 +182,7 @@ type OrderCreateTransactionData struct {
 	Time             time.Time        `json:"time"`
 }
 
-//OrderFillTransactionData represents the data structure embedded in
+//OrderFillTransactionData represents a data structure embedded in
 //OrderCreateTransaction
 type OrderFillTransactionData struct {
 	Type                          string          `json:"type"`
@@ -263,7 +263,7 @@ type Order struct {
 	LastTransactionID string    `json:"lastTransactionID"`
 }
 
-//OrderData represents the
+//OrderData represents the data associated with an order 
 type OrderData struct {
 	ID               string           `json:"id"`
 	CreateTime       time.Time        `json:"createTime"`
