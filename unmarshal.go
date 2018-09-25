@@ -263,7 +263,7 @@ type Order struct {
 	LastTransactionID string    `json:"lastTransactionID"`
 }
 
-//OrderData represents the data associated with an order 
+//OrderData represents the data associated with an order
 type OrderData struct {
 	ID               string           `json:"id"`
 	CreateTime       time.Time        `json:"createTime"`
@@ -327,48 +327,48 @@ func (o OrderCancelTransaction) UnmarshalOrderCancelTransaction(
 }
 
 /*
+***************************
+positions
+***************************
+*/
 
-{"orderCancelTransaction":{
-	"type":"ORDER_CANCEL",
-	"orderID":"10307",
-	"reason":"CLIENT_REQUEST",
-	"id":"10308",
-	"accountID":"101-001-6395930-001",
-	"userID":6395930,
-	"batchID":"10308",
-	"requestID":"24458086831732667",
-	"time":"2018-09-07T04:36:53.627343343Z"
-		},
-	"relatedTransactionIDs":["10308"],
-	"lastTransactionID":"10308"
+type Position struct {
+	PositionDetails   PositionDetails `json:"position"`
+	LastTransactionID string          `json:"lastTransactionID"`
 }
 
+type PositionDetails struct {
+	Instrument              string              `json:"instrument"`
+	Long                    PositionSideDetails `json:"long"`
+	Short                   PositionSideDetails `json:"short"`
+	PL                      string              `json:"pl"`
+	ResettablePL            string              `json:"resettablePL"`
+	Financing               string              `json:"financing"`
+	Commission              string              `json:"commission"`
+	GuaranteedExecutionFees string              `json:"guaranteedExecutionFees"`
+	UnrealizedPL            string              `json:"unrealizedPL"`
+	MarginUsed              string              `json:"marginUsed"`
+}
 
-String Unmarshal Order Status:
-{"order": {
-	"id":"9993",
-	"createTime":"2018-09-07T01:41:30.453248834Z",
-	"type":"LIMIT",
-	"instrument":"GBP_USD",
-	"units":"2",
-	"timeInForce":"GTC",
-	"takeProfitOnFill":{
-		"price":"1.28794","timeInForce":"GTC"
-		},
-	"stopLossOnFill":{
-		"price":"1.29194",
-		"timeInForce":"GTC"},
-	"price":"1.29094",
-	"triggerCondition":"DEFAULT",
-	"partialFill":"DEFAULT_FILL",
-	"positionFill":"DEFAULT",
-	"state":"PENDING"},
-	"lastTransactionID":"9993"}
+type PositionSideDetails struct {
+	AveragePrice            string   `json:"averagePrice"`
+	Units                   string   `json:"units"`
+	PL                      string   `json:"pl"`
+	ResettablePL            string   `json:"resettablePL"`
+	Financing               string   `json:"financing"`
+	GuaranteedExecutionFees string   `json:"guaranteedExecutionFees"`
+	UnrealizedPL            string   `json:"unrealizedPL"`
+	TradeIDs                []string `json:"tradeIDs"`
+}
 
-	curl \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer 9fd32dee7bac39d8af58cd654b193b61-f6c942e3a94280431256657ffe9d9a70" \
-  "https://api-fxpractice.oanda.com/v3/accounts/101-001-6395930-001/orders/10602"
+//UnmarshalPosition unmarshals Position data byte slice from Oanda
+func (p Position) UnmarshalPosition(positionByte []byte) *Position {
 
+	err := json.Unmarshal(positionByte, &p)
 
-*/
+	if err != nil {
+		log.Println(ErrorCode{}.UnmarshalErrorCode(positionByte))
+	}
+
+	return &p
+}
