@@ -348,3 +348,46 @@ func ClosePositions(instrument string) ([]byte, error) {
 
 	return positionsResponseByte, err
 }
+
+/*
+	***************************
+	account
+	***************************
+*/
+
+/*
+	curl \
+	  -H "Content-Type: application/json" \
+	  -H "Authorization: Bearer 9fd32dee7bac39d8af58cd654b193b61-f6c942e3a94280431256657ffe9d9a70" \
+	  "https://api-fxtrade.oanda.com/v3/accounts/101-001-6395930-001/summary"
+*/
+
+//GetAccountSummary gets the position details for a single instrument
+func GetAccountSummary() ([]byte, error) {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", oandaURL+"/accounts/"+accountID+
+		"/summary", nil)
+
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", bearer)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	defer resp.Body.Close()
+
+	accountSummaryResponseByte, _ := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return accountSummaryResponseByte, err
+}

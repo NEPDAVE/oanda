@@ -372,3 +372,61 @@ func (p Position) UnmarshalPosition(positionByte []byte) *Position {
 
 	return &p
 }
+
+/*
+***************************
+account
+***************************
+*/
+
+type AccountSummary struct {
+	AccountSummaryDetails AccountSummaryDetails `json:"account"`
+	LastTransactionID     string                `json:"lastTransactionID"`
+}
+
+type AccountSummaryDetails struct {
+	GuaranteedStopLossOrderMode string    `json:"guaranteedStopLossOrderMode"`
+	ID                          string    `json:"id"`
+	CreatedTime                 string    `json:"createdTime"`
+	Currency                    string    `json:"currency"`
+	CreateByUserID              int       `json:"createdByUserID"`
+	Alias                       string    `json:"Primary"`
+	MarginRate                  string    `json:"marginRate"`
+	HedgingEnabled              string    `json:"hedgingEnabled"`
+	LastTransactionID           string    `json:"lastTransactionID"`
+	Balance                     string    `json:"balance"`
+	OpenTradeCount              int       `json:"openTradeCount"`
+	OpenPositionCount           int       `json:"openPositionCount"`
+	PendingOrderCount           int       `json:"pendingOrderCount"`
+	PL                          string    `json:"pl"`
+	ResettablePL                string    `json:"resettablePL"`
+	ResettablePLTime            time.Time `json:"resettablePLTime"`
+	Financing                   string    `json:"financing"`
+	Commission                  string    `json:"commission"`
+	GuaranteedExecutionFees     string    `json:"guaranteedExecutionFees"`
+	UnrealizedPL                string    `json:"unrealizedPL"`
+	NAV                         string    `json:"NAV"` //The net asset value of the Account. Equal to Account balance + unrealizedPL
+	MarginUsed                  string    `json:"marginUsed"`
+	MarginAvailable             string    `json:"marginAvailable"`
+	PositionValue               string    `json:"positionValue"`
+	MarginCloseoutUnrealizedPL  string    `json:"marginCloseoutUnrealizedPL"`
+	MarginCloseoutNAV           string    `json:"marginCloseoutNAV"`
+	MarginCloseoutMarginUsed    string    `json:"marginCloseoutMarginUsed"`
+	MarginCloseoutPositionValue string    `json:"marginCloseoutPositionValue"`
+	MarginCloseoutPercent       string    `json:"marginCloseoutPercent"`
+	WithdrawalLimit             string    `json:"withdrawalLimit"`
+	MarginCallMarginUsed        string    `json:"MarginCallMarginUsed"`
+	MarginCallPercent           string    `json:"marginCallPercent"`
+}
+
+//UnmarshalAccount unmarshals Account data byte slice from Oanda
+func (a AccountSummary) UnmarshalAccountSummary(accountByte []byte) *AccountSummary {
+
+	err := json.Unmarshal(accountByte, &a)
+
+	if err != nil {
+		log.Println(ErrorCode{}.UnmarshalErrorCode(accountByte))
+	}
+
+	return &a
+}
