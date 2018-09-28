@@ -18,7 +18,7 @@ var (
 	accountID      string
 )
 
-//OandaInit sets the global variables using using the evironment variables
+//OandaInit populates the global variables using using the evironment variables
 func OandaInit() {
 	oandaURL = os.Getenv("OANDA_URL")
 	streamoandaURL = os.Getenv("STREAM_OANDA_URL")
