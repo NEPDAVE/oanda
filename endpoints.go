@@ -88,6 +88,7 @@ func GetPricing(instruments ...string) ([]byte, error) {
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", bearer)
+	req.Header.Add("Connection", "Keep-Alive")
 
 	if err != nil {
 		return []byte{}, err
