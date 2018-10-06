@@ -323,10 +323,6 @@ type Close struct {
 //ClosePositions closes all positions for instrument
 func ClosePositions(instrument string) ([]byte, error) {
 	close := Close{LongUnits: "ALL", ShortUnits: "ALL"}
-	fmt.Println("###########################")
-	fmt.Println(close)
-	fmt.Println("###########################")
-
 	longAndShort := MarshalClosePositions(close)
 	body := bytes.NewBuffer(longAndShort)
 	client := &http.Client{}
