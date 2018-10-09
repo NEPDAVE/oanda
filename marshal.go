@@ -27,6 +27,9 @@ type Orders struct {
 	Units            string           `json:"units"`
 	Type             string           `json:"type"`
 	PositionFill     string           `json:"positionFill"`
+	TradeID          string           `json:"tradeID"`
+	Distance         string           `json:"distance"`
+	TriggerCondition string           `json:"triggerCondition"`
 }
 
 //StopLossOnFill represents stop loss parameters for an Order

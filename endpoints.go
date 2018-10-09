@@ -272,6 +272,70 @@ func GetOrder(orderID string) ([]byte, error) {
 
 /*
 ***************************
+trades
+***************************
+*/
+
+// //ClosePositions closes all positions for instrument
+// func ClosePositions(instrument string) ([]byte, error) {
+// 	close := Close{LongUnits: "ALL", ShortUnits: "ALL"}
+// 	longAndShort := MarshalClosePositions(close)
+// 	body := bytes.NewBuffer(longAndShort)
+// 	client := &http.Client{}
+//
+// 	req, err := http.NewRequest("PUT", oandaURL+"/accounts/"+accountID+
+// 		"/positions/"+instrument+"/close", body)
+//
+// 	fmt.Println(req)
+//
+// 	req.Header.Set("Authorization", bearer)
+// 	req.Header.Set("content-type", "application/json")
+//
+// 	if err != nil {
+// 		return []byte{}, err
+// 	}
+//
+// 	resp, err := client.Do(req)
+//
+// 	if err != nil {
+// 		return []byte{}, err
+// 	}
+//
+// 	defer resp.Body.Close()
+//
+// 	positionsResponseByte, _ := ioutil.ReadAll(resp.Body)
+//
+// 	if err != nil {
+// 		return []byte{}, err
+// 	}
+//
+// 	return positionsResponseByte, err
+// }
+
+//curl: Set dependent Orders for Trade 6397
+// body=$(cat << EOF
+// {
+//   "takeProfit": {
+//     "timeInForce": "GTC",
+//     "price": "0.5"
+//   },
+//   "stopLoss": {
+//     "timeInForce": "GTC",
+//     "price": "2.5"
+//   }
+// }
+// EOF
+// )
+//
+// curl \
+//   -X PUT \
+//   -H "Content-Type: application/json" \
+//   -H "Authorization: Bearer 9fd32dee7bac39d8af58cd654b193b61-f6c942e3a94280431256657ffe9d9a70" \
+//   -d "$body" \
+//   "https://api-fxtrade.oanda.com/v3/accounts/101-001-6395930-001/trades/6397/orders"
+
+/*
+***************************
 position
 ***************************
 */
@@ -355,6 +419,22 @@ func ClosePositions(instrument string) ([]byte, error) {
 
 	return positionsResponseByte, err
 }
+
+// body=$(cat << EOF
+// {
+//   "clientExtensions": {
+//     "comment": "New comment for my limit order"
+//   }
+// }
+// EOF
+// )
+//
+// curl \
+//   -X PUT \
+//   -H "Content-Type: application/json" \
+//   -H "Authorization: Bearer 9fd32dee7bac39d8af58cd654b193b61-f6c942e3a94280431256657ffe9d9a70" \
+//   -d "$body" \
+//   "https://api-fxtrade.oanda.com/v3/accounts/101-001-6395930-001/orders/6372/clientExtensions"
 
 /*
 	***************************
