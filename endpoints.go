@@ -384,11 +384,45 @@ type Close struct {
 	ShortUnits string `json:"shortUnits"`
 }
 
-//ClosePositions closes all positions for instrument
-func ClosePositions(instrument string) ([]byte, error) {
-	close := Close{LongUnits: "ALL", ShortUnits: "ALL"}
-	longAndShort := MarshalClosePositions(close)
-	body := bytes.NewBuffer(longAndShort)
+//CloseLongPositions closes all positions for instrument
+func CloseLongPositions(instrument string) ([]byte, error) {
+	closeAllLongUnits := []byte(`{"longUnits": "ALL" }`)
+	body := bytes.NewBuffer(closeAllLongUnits)
+	client := &http.Client{}
+
+	req, err := http.NewRequest("PUT", oandaURL+"/accounts/"+accountID+
+		"/positions/"+instrument+"/close", body)
+
+	fmt.Println(req)
+
+	req.Header.Set("Authorization", bearer)
+	req.Header.Set("content-type", "application/json")
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	defer resp.Body.Close()
+
+	positionsResponseByte, _ := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return positionsResponseByte, err
+}
+
+//CloseShortPositions closes all positions for instrument
+func CloseShortPositions(instrument string) ([]byte, error) {
+	closeAllShortUnits := []byte(`{"shortUnits": "ALL" }`)
+	body := bytes.NewBuffer(closeAllShortUnits)
 	client := &http.Client{}
 
 	req, err := http.NewRequest("PUT", oandaURL+"/accounts/"+accountID+
