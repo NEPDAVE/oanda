@@ -23,8 +23,9 @@ func (e ErrorCode) UnmarshalErrorCode(errorByte []byte) *ErrorCode {
 	err := json.Unmarshal(errorByte, &e)
 
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
+
 
 	return &e
 }
