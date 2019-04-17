@@ -26,7 +26,6 @@ func (e ErrorCode) UnmarshalErrorCode(errorByte []byte) *ErrorCode {
 		log.Println(err)
 	}
 
-
 	return &e
 }
 
