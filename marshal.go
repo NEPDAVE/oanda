@@ -14,30 +14,29 @@ simple orders
 
 //SimpleClientOrders represents entire Orders object for submiting/creating Orders with Oanda
 type SimpleClientOrders struct {
-        Orders SimpleOrders `json:"order"`
+	Orders SimpleOrders `json:"order"`
 }
 
 //SimpleOrder represents a single order to buy or sell with no stop loss or take profit
 type SimpleOrders struct {
-        TimeInForce      string `json:"timeInForce"`
-        Instrument       string `json:"instrument"`
-        Units            string `json:"units"`
-        Type             string `json:"type"`
-        PositionFill     string `json:"positionFill"`
+	TimeInForce  string `json:"timeInForce"`
+	Instrument   string `json:"instrument"`
+	Units        string `json:"units"`
+	Type         string `json:"type"`
+	PositionFill string `json:"positionFill"`
 }
 
 //MarshalSimpleClientOrders marshals order data into []byte for making API requests
 func (c SimpleClientOrders) MarshalSimpleClientOrders(simpleClientOrders SimpleClientOrders) []byte {
 
-        simpleClientOrdersByte, err := json.Marshal(simpleClientOrders)
+	simpleClientOrdersByte, err := json.Marshal(simpleClientOrders)
 
-        if err != nil {
-                fmt.Println(err)
-        }
+	if err != nil {
+		fmt.Println(err)
+	}
 
-        return simpleClientOrdersByte
+	return simpleClientOrdersByte
 }
-
 
 /*
 ***************************
@@ -53,17 +52,17 @@ type ClientOrders struct {
 
 //Orders represents single order to Oanda
 type Orders struct {
-	Price string `json:"price"`
+	Price            string           `json:"price"`
 	StopLossOnFill   StopLossOnFill   `json:"stopLossOnFill"`
 	TakeProfitOnFill TakeProfitOnFill `json:"takeProfitOnFill"`
-	TimeInForce      string `json:"timeInForce"`
-	Instrument       string `json:"instrument"`
-	Units            string `json:"units"`
-	Type             string `json:"type"`
-	PositionFill     string `json:"positionFill"`
-	TradeID          string `json:"tradeID"`
-	Distance         string `json:"distance"`
-	TriggerCondition string `json:"triggerCondition"`
+	TimeInForce      string           `json:"timeInForce"`
+	Instrument       string           `json:"instrument"`
+	Units            string           `json:"units"`
+	Type             string           `json:"type"`
+	PositionFill     string           `json:"positionFill"`
+	TradeID          string           `json:"tradeID"`
+	Distance         string           `json:"distance"`
+	TriggerCondition string           `json:"triggerCondition"`
 }
 
 //StopLossOnFill represents stop loss parameters for an Order
