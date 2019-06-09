@@ -161,7 +161,7 @@ orders
 */
 
 //CreateOrder used to submit orders
-func CreateOrder(orders []byte) ([]byte, error) {
+func CreateOrder(orders []byte) []byte {
 	body := bytes.NewBuffer(orders)
 	client := &http.Client{}
 
@@ -171,13 +171,15 @@ func CreateOrder(orders []byte) ([]byte, error) {
 	req.Header.Set("content-type", "application/json")
 
 	if err != nil {
-		return []byte{}, err
+		logger.Println(err)
+		return []byte{}
 	}
 
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return []byte{}, err
+		logger.Println(err)
+		return []byte{}
 	}
 
 	defer resp.Body.Close()
@@ -185,10 +187,11 @@ func CreateOrder(orders []byte) ([]byte, error) {
 	createOrderByte, _ := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		return []byte{}, err
+		logger.Println(err)
+		return []byte{}
 	}
 
-	return createOrderByte, err
+	return createOrderByte
 }
 
 /*
