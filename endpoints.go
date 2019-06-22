@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"log"
 )
 
 var (
@@ -16,14 +17,18 @@ var (
 	streamoandaURL string
 	bearer         string
 	accountID      string
+	client         *http.Client
+	logger         *log.Logger
 )
 
 //OandaInit populates the global variables using using the evironment variables
-func OandaInit() {
+func OandaInit(logger *log.Logger) {
+	logger = logger
 	oandaURL = os.Getenv("OANDA_URL")
 	streamoandaURL = os.Getenv("STREAM_OANDA_URL")
 	bearer = "Bearer " + os.Getenv("OANDA_TOKEN")
 	accountID = os.Getenv("OANDA_ACCOUNT_ID")
+
 }
 
 /*
@@ -78,7 +83,6 @@ func StreamPricing(instruments string, out chan StreamResult) {
 
 //GetPricing does single request to API
 func GetPricing(instruments ...string) ([]byte, error) {
-	client := &http.Client{}
 	queryValues := url.Values{}
 	instrumentsEncoded := strings.Join(instruments, ",")
 	queryValues.Add("instruments", instrumentsEncoded)
@@ -161,9 +165,8 @@ orders
 */
 
 //CreateOrder used to submit orders
-func CreateOrder(orders []byte) []byte {
+func CreateOrder(orders []byte) ([]byte, error) {
 	body := bytes.NewBuffer(orders)
-	client := &http.Client{}
 
 	req, err := http.NewRequest("POST", oandaURL+"/accounts/"+accountID+"/orders", body)
 
@@ -172,14 +175,14 @@ func CreateOrder(orders []byte) []byte {
 
 	if err != nil {
 		logger.Println(err)
-		return []byte{}
+		return []byte{}, err
 	}
 
 	resp, err := client.Do(req)
 
 	if err != nil {
 		logger.Println(err)
-		return []byte{}
+		return []byte{}, err
 	}
 
 	defer resp.Body.Close()
@@ -188,10 +191,10 @@ func CreateOrder(orders []byte) []byte {
 
 	if err != nil {
 		logger.Println(err)
-		return []byte{}
+		return []byte{}, err
 	}
 
-	return createOrderByte
+	return createOrderByte, err
 }
 
 /*

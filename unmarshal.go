@@ -158,29 +158,32 @@ orders
 
 //OrderCreateTransaction represents the data structure returned by oanda after
 //submiting an order
-type OrderCreateTransaction struct {
-	OrderCreateTransaction OrderCreateTransactionData `json:"orderCreateTransaction"`
-	OrderFillTransaction   OrderFillTransactionData   `json:"orderFillTransaction"`
+type OrderCreateTransactionResponse struct {
+	LastTransactionID      string                 `json:"lastTransactionID"`
+	OrderCreateTransaction OrderCreateTransaction `json:"orderCreateTransaction"`
+	RelatedTransactionIDs  []string               `json:"relatedTransactionIDs"`
 }
 
-//OrderCreateTransactionData represents a data structure embedded in
-//OrderCreateTransaction
-type OrderCreateTransactionData struct {
-	Type             string           `json:"type"`
-	Instrument       string           `json:"instrument"`
-	Units            string           `json:"units"`
-	TimeInForce      string           `json:"timeInForce"`
-	PositionFill     string           `json:"positionFill"`
-	TakeProfitOnFill TakeProfitOnFill `json:"takeProfitOnFill"` //see orders.go
-	StopLossOnFill   StopLossOnFill   `json:"stopLossOnFill"`   //see orders.go
-	Reason           string           `json:"reason"`
-	ID               string           `json:"id"`
-	UserID           int              `json:"userID"`
+type OrderCreateTransaction struct {
 	AccountID        string           `json:"accountID"`
 	BatchID          string           `json:"batchID"`
+	ID               string           `json:"id"`
+	Instrument       string           `json:"instrument"`
+	PartialFill      string           `json:"partialFill"`
+	PositionFill     string           `json:"positionFill"`
+	Price            string           `json:"price"`
+	Reason           string           `json:"reason"`
 	RequestID        string           `json:"requestID"`
+	StopLossOnFill   StopLossOnFill   `json:"stopLossOnFill"`
+	TakeProfitOnFill TakeProfitOnFill `json:"takeProfitOnFill"`
 	Time             time.Time        `json:"time"`
+	TimeInForce      string           `json:"timeInForce"`
+	TriggerCondition string           `json:"triggerCondition"`
+	Type             string           `json:"type"`
+	Units            string           `json:"units"`
+	UserID           string           `json:"userID"`
 }
+
 
 //OrderFillTransactionData represents a data structure embedded in
 //OrderCreateTransaction
@@ -244,8 +247,8 @@ type FullPriceAsk struct {
 
 //UnmarshalOrderCreateTransaction unmarshals the returned data byte slice from Oanda
 //that contains the order data
-func (o OrderCreateTransaction) UnmarshalOrderCreateTransaction(
-	ordersResponseByte []byte) *OrderCreateTransaction {
+func (o OrderCreateTransactionResponse) UnmarshalOrderCreateTransactionResponse(
+	ordersResponseByte []byte) (*OrderCreateTransactionResponse, error) {
 
 	err := json.Unmarshal(ordersResponseByte, &o)
 
@@ -253,7 +256,7 @@ func (o OrderCreateTransaction) UnmarshalOrderCreateTransaction(
 		log.Println(ErrorCode{}.UnmarshalErrorCode(ordersResponseByte))
 	}
 
-	return &o
+	return &o, err
 }
 
 //Order represents the data structure returned by Oanda after calling
