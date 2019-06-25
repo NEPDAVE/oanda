@@ -184,7 +184,6 @@ type OrderCreateTransaction struct {
 	UserID           string           `json:"userID"`
 }
 
-
 //OrderFillTransactionData represents a data structure embedded in
 //OrderCreateTransaction
 type OrderFillTransactionData struct {

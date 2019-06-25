@@ -12,30 +12,31 @@ simple orders
 ***************************
 */
 
-//SimpleClientOrders represents entire Orders object for submiting/creating Orders with Oanda
-type SimpleClientOrders struct {
+//SimpleOrdersRequest represents entire Orders object for submiting/creating Orders with Oanda
+type SimpleOrdersRequest struct {
 	Orders SimpleOrders `json:"order"`
 }
 
 //SimpleOrder represents a single order to buy or sell with no stop loss or take profit
 type SimpleOrders struct {
-	TimeInForce  string `json:"timeInForce"`
-	Instrument   string `json:"instrument"`
-	Units        string `json:"units"`
-	Type         string `json:"type"`
-	PositionFill string `json:"positionFill"`
+	TakeProfitOnFill TakeProfitOnFill `json:"takeProfitOnFill"`
+	TimeInForce      string           `json:"timeInForce"`
+	Instrument       string           `json:"instrument"`
+	Units            string           `json:"units"`
+	Type             string           `json:"type"`
+	PositionFill     string           `json:"positionFill"`
 }
 
-//MarshalSimpleClientOrders marshals order data into []byte for making API requests
-func (c SimpleClientOrders) MarshalSimpleClientOrders(simpleClientOrders SimpleClientOrders) []byte {
+//MarshalSimpleOrdersRequest marshals order data into []byte for making API requests
+func (c SimpleOrdersRequest) MarshalSimpleOrdersRequest(simpleOrdersRequest SimpleOrdersRequest) []byte {
 
-	simpleClientOrdersByte, err := json.Marshal(simpleClientOrders)
+	simpleOrdersRequestByte, err := json.Marshal(simpleOrdersRequest)
 
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	return simpleClientOrdersByte
+	return simpleOrdersRequestByte
 }
 
 /*
@@ -78,7 +79,7 @@ type TakeProfitOnFill struct {
 }
 
 //MarshalOrdersRequest marshals order data into []byte for making API requests
-func (c OrdersRequest) MarshalOrdersRequest(ordersRequest OrdersRequest) []byte {
+func (o OrdersRequest) MarshalOrdersRequest(ordersRequest OrdersRequest) []byte {
 
 	ordersRequestByte, err := json.Marshal(ordersRequest)
 
