@@ -23,6 +23,7 @@ var (
 
 //OandaInit populates the global variables using using the evironment variables
 func OandaInit(logger *log.Logger) {
+	client = &http.Client{}
 	logger = logger
 	oandaURL = os.Getenv("OANDA_URL")
 	streamoandaURL = os.Getenv("STREAM_OANDA_URL")
@@ -167,7 +168,6 @@ orders
 //CreateOrder used to submit orders
 func CreateOrder(orders []byte) ([]byte, error) {
 	body := bytes.NewBuffer(orders)
-
 	req, err := http.NewRequest("POST", oandaURL+"/accounts/"+accountID+"/orders", body)
 
 	req.Header.Set("Authorization", bearer)
@@ -178,7 +178,11 @@ func CreateOrder(orders []byte) ([]byte, error) {
 		return []byte{}, err
 	}
 
+	fmt.Println(req)
+
 	resp, err := client.Do(req)
+
+	fmt.Println(resp)
 
 	if err != nil {
 		logger.Println(err)
