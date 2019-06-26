@@ -178,11 +178,7 @@ func CreateOrder(orders []byte) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	fmt.Println(req)
-
 	resp, err := client.Do(req)
-
-	fmt.Println(resp)
 
 	if err != nil {
 		logger.Println(err)
