@@ -181,7 +181,7 @@ type OrderCreateTransaction struct {
 	TriggerCondition string           `json:"triggerCondition"`
 	Type             string           `json:"type"`
 	Units            string           `json:"units"`
-	UserID           string           `json:"userID"`
+	UserID           int              `json:"userID"`
 }
 
 //OrderFillTransactionData represents a data structure embedded in
