@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"strings"
 	"time"
 )
 
@@ -74,7 +76,7 @@ func NewPricing(instrument string) (*Pricing, error) {
 		return nil, err
 	}
 
-	err = pricing.UnmarshalPricing(pricesByte)
+	err = json.Unmarshal(pricesByte, &pricing)
 
 	if err != nil {
 		return nil, err
@@ -85,8 +87,13 @@ func NewPricing(instrument string) (*Pricing, error) {
 }
 
 //GetPricing returns latest pricing data
-func (p *Pricing) GetPricing(instrument string) ([]byte, error) {
-	req, err := http.NewRequest("GET", oandaURL+"/accounts/"+accountID+"/pricing?"+instrument, nil)
+func (p *Pricing) GetPricing(instruments ...string) ([]byte, error) {
+	queryValues := url.Values{}
+	instrumentsEncoded := strings.Join(instruments, ",")
+	queryValues.Add("instruments", instrumentsEncoded)
+
+	req, err := http.NewRequest("GET", oandaURL+"/accounts/"+accountID+
+		"/pricing?"+queryValues.Encode(), nil)
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", bearer)
@@ -104,21 +111,11 @@ func (p *Pricing) GetPricing(instrument string) ([]byte, error) {
 
 	defer resp.Body.Close()
 
-	pricing, _ := ioutil.ReadAll(resp.Body)
+	pricesByte, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return pricing, nil
-}
-
-func (p *Pricing) UnmarshalPricing(pricing []byte) error {
-	err := json.Unmarshal(pricing, &p)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return pricesByte, nil
 }
