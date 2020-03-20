@@ -8,8 +8,8 @@ import (
 	"time"
 )
 
-//IC represents the JSON returned by /v3/instruments/{instrument}/candles
-type IC struct {
+//InstrumentHistory represents the JSON returned by /v3/instruments/{instrument}/candles
+type InstrumentHistory struct {
 	Candles     []Candles `json:"candles"`
 	Granularity string    `json:"granularity"`
 	Instrument  string    `json:"instrument"`
@@ -27,26 +27,26 @@ type Candles struct {
 	Volume   int       `json:"volume"`
 }
 
-func NewIC(instrument string, count string, granularity string) (*IC, error) {
-	ic := &IC{}
+func NewInstrumentHistory(instrument string, count string, granularity string) (*InstrumentHistory, error) {
+	ih := &InstrumentHistory{}
 
-	icByte, err := ic.GetCandles(instrument, count, granularity)
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(icByte, &ic)
+	ihByte, err := ih.GetCandles(instrument, count, granularity)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return ic, nil
+	err = json.Unmarshal(ihByte, &ih)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return ih, nil
 }
 
 //GetCandles returns historical instrument candle data
-func (i *IC) GetCandles(instrument string, count string, granularity string) ([]byte, error) {
+func (i *InstrumentHistory) GetCandles(instrument string, count string, granularity string) ([]byte, error) {
 	queryValues := url.Values{}
 	queryValues.Add("instruments", instrument)
 	queryValues.Add("count", count)
@@ -71,11 +71,11 @@ func (i *IC) GetCandles(instrument string, count string, granularity string) ([]
 
 	defer resp.Body.Close()
 
-	icByte, err := ioutil.ReadAll(resp.Body)
+	ihByte, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return icByte, err
+	return ihByte, err
 }
