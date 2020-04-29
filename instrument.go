@@ -45,6 +45,7 @@ func NewInstrumentHistory(instrument string, count string, granularity string) (
 	return ih, nil
 }
 
+/*
 //GetCandles returns historical instrument candle data
 func (i *InstrumentHistory) GetCandles(instrument string, count string, granularity string) ([]byte, error) {
 	queryValues := url.Values{}
@@ -52,8 +53,7 @@ func (i *InstrumentHistory) GetCandles(instrument string, count string, granular
 	queryValues.Add("count", count)
 	queryValues.Add("granularity", granularity)
 
-	req, err := http.NewRequest("GET", oandaURL+"/instruments"+"/"+instrument+
-		"/candles?"+queryValues.Encode(), nil)
+	req, err := http.NewRequest("GET", oandaHost+"/instruments/"+instrument+"/candles?"+queryValues.Encode(), nil
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", bearer)

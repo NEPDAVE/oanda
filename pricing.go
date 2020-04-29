@@ -2,120 +2,74 @@ package oanda
 
 import (
 	"encoding/json"
-	"io/ioutil"
-	"net/http"
 	"net/url"
 	"strings"
 	"time"
 )
 
-type Pricing struct {
-	Prices []Prices `json:"prices"`
-}
-
-type Prices struct {
-	Asks                       []Asks                     `json:"asks"`
-	Bids                       []Bids                     `json:"bids"`
-	CloseoutAsk                string                     `json:"closeoutAsk"`
-	CloseoutBid                string                     `json:"closeoutBid"`
-	Instrument                 string                     `json:"instrument"`
-	QuoteHomeConversionFactors QuoteHomeConversionFactors `json:"quoteHomeConversionFactors"`
-	Status                     string                     `json:"status"`
-	Time                       time.Time                  `json:"time"`
-	UnitsAvailable             UnitsAvailable             `json:"unitsAvailable"`
-}
-
-type Asks struct {
-	Liquidity int    `json:"liquidity"`
-	Price     string `json:"price"`
-}
-
-type Bids struct {
-	Liquidity int    `json:"liquidity"`
-	Price     string `json:"price"`
-}
-
-type QuoteHomeConversionFactors struct {
-	NegativeUnits string `json:"negativeUnits"`
-	PositiveUnits string `json:"positiveUnits"`
-}
-
-type Default struct {
-	Long  string `json:"long"`
-	Short string `json:"short"`
-}
-
-type OpenOnly struct {
-	Long  string `json:"long"`
-	Short string `json:"short"`
-}
-
-type ReduceFirst struct {
-	Long  string `json:"long"`
-	Short string `json:"short"`
-}
-
-type ReduceOnly struct {
-	Long  string `json:"long"`
-	Short string `json:"short"`
-}
-
-type UnitsAvailable struct {
-	Default     Default     `json:"default"`
-	OpenOnly    OpenOnly    `json:"openOnly"`
-	ReduceFirst ReduceFirst `json:"reduceFirst"`
-	ReduceOnly  ReduceOnly  `json:"reduceOnly"`
-}
-
-func NewPricing(instrument string) (*Pricing, error) {
-	pricing := &Pricing{}
-
-	pricesByte, err := pricing.GetPricing(instrument)
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(pricesByte, &pricing)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return pricing, nil
-
+type PricingPayload struct {
+	Prices []struct {
+		Asks []struct {
+			Liquidity int    `json:"liquidity"`
+			Price     string `json:"price"`
+		} `json:"asks"`
+		Bids []struct {
+			Liquidity int    `json:"liquidity"`
+			Price     string `json:"price"`
+		} `json:"bids"`
+		CloseoutAsk                string `json:"closeoutAsk"`
+		CloseoutBid                string `json:"closeoutBid"`
+		Instrument                 string `json:"instrument"`
+		QuoteHomeConversionFactors struct {
+			NegativeUnits string `json:"negativeUnits"`
+			PositiveUnits string `json:"positiveUnits"`
+		} `json:"quoteHomeConversionFactors"`
+		Status         string    `json:"status"`
+		Time           time.Time `json:"time"`
+		UnitsAvailable struct {
+			Default struct {
+				Long  string `json:"long"`
+				Short string `json:"short"`
+			} `json:"default"`
+			OpenOnly struct {
+				Long  string `json:"long"`
+				Short string `json:"short"`
+			} `json:"openOnly"`
+			ReduceFirst struct {
+				Long  string `json:"long"`
+				Short string `json:"short"`
+			} `json:"reduceFirst"`
+			ReduceOnly struct {
+				Long  string `json:"long"`
+				Short string `json:"short"`
+			} `json:"reduceOnly"`
+		} `json:"unitsAvailable"`
+	} `json:"prices"`
 }
 
 //GetPricing returns latest pricing data
-func (p *Pricing) GetPricing(instruments ...string) ([]byte, error) {
+func GetPricing(instruments []string) (*PricingPayload, error) {
+	instrumentsString := strings.Join(instruments, ",")
 	queryValues := url.Values{}
-	instrumentsEncoded := strings.Join(instruments, ",")
-	queryValues.Add("instruments", instrumentsEncoded)
+	queryValues.Add("instruments", instrumentsString)
 
-	req, err := http.NewRequest("GET", oandaURL+"/accounts/"+accountID+
-		"/pricing?"+queryValues.Encode(), nil)
+	reqArgs := &ReqArgs{
+		ReqMethod: "GET",
+		URL:       oandaHost + "/accounts/" + accountID + "/pricing?" + queryValues.Encode(),
+	}
 
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", bearer)
-	req.Header.Add("Connection", "Keep-Alive")
+	pricingBytes, err := MakeRequest(reqArgs)
 
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := client.Do(req)
+	pricingPayload := &PricingPayload{}
+	err = json.Unmarshal(pricingBytes, pricingPayload)
 
 	if err != nil {
 		return nil, err
 	}
 
-	defer resp.Body.Close()
-
-	pricesByte, err := ioutil.ReadAll(resp.Body)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return pricesByte, nil
+	return pricingPayload, nil
 }
