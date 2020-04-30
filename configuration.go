@@ -7,7 +7,7 @@ import (
 
 var (
 	client         = &http.Client{}
-	oandaHost       = os.Getenv("OANDA_HOST")
+	oandaHost      = os.Getenv("OANDA_HOST")
 	streamOandaURL = os.Getenv("STREAM_OANDA_HOST")
 	bearer         = "Bearer " + os.Getenv("OANDA_TOKEN")
 	accountID      = os.Getenv("OANDA_ACCOUNT_ID")

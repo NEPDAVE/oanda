@@ -108,7 +108,7 @@ func NewOrder(op *OrderPayload) (*OrderResponse, error) {
 
 func CreateOrder(orders []byte) ([]byte, error) {
 	body := bytes.NewBuffer(orders)
-	req, err := http.NewRequest("POST", oandaURL+"/accounts/"+accountID+"/orders", body)
+	req, err := http.NewRequest("POST", oandaHost+"/accounts/"+accountID+"/orders", body)
 
 	req.Header.Set("Authorization", bearer)
 	req.Header.Set("content-type", "application/json")

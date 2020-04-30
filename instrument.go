@@ -2,80 +2,131 @@ package oanda
 
 import (
 	"encoding/json"
-	"io/ioutil"
-	"net/http"
 	"net/url"
 	"time"
 )
 
-//InstrumentHistory represents the JSON returned by /v3/instruments/{instrument}/candles
-type InstrumentHistory struct {
-	Candles     []Candles `json:"candles"`
-	Granularity string    `json:"granularity"`
-	Instrument  string    `json:"instrument"`
+type Candle struct {
+	Open  float64 `json:"o,string"`
+	Close float64 `json:"c,string"`
+	Low   float64 `json:"l,string"`
+	High  float64 `json:"h,string"`
 }
-type Mid struct {
-	C string `json:"c"`
-	H string `json:"h"`
-	L string `json:"l"`
-	O string `json:"o"`
-}
+
 type Candles struct {
 	Complete bool      `json:"complete"`
-	Mid      Mid       `json:"mid"`
-	Time     time.Time `json:"time"`
 	Volume   int       `json:"volume"`
+	Time     time.Time `json:"time"`
+	Mid      Candle    `json:"mid"`
 }
 
-func NewInstrumentHistory(instrument string, count string, granularity string) (*InstrumentHistory, error) {
-	ih := &InstrumentHistory{}
-
-	ihByte, err := ih.GetCandles(instrument, count, granularity)
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(ihByte, &ih)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return ih, nil
+type BidAskCandles struct {
+	Candles []struct {
+		Ask struct {
+			C float64 `json:"c,string"`
+			H float64 `json:"h,string"`
+			L float64 `json:"l,string"`
+			O float64 `json:"o,string"`
+		} `json:"ask"`
+		Bid struct {
+			C float64 `json:"c,string"`
+			H float64 `json:"h,string"`
+			L float64 `json:"l,string"`
+			O float64 `json:"o,string"`
+		} `json:"bid"`
+		Complete bool      `json:"complete"`
+		Time     time.Time `json:"time"`
+		Volume   int       `json:"volume"`
+	} `json:"candles"`
 }
 
-/*
-//GetCandles returns historical instrument candle data
-func (i *InstrumentHistory) GetCandles(instrument string, count string, granularity string) ([]byte, error) {
+type InstrumentHistory struct {
+	Instrument  string    `json:"instrument"`
+	Granularity string    `json:"granularity"`
+	Candles     []Candles `json:"candles"`
+}
+
+type Bucket struct {
+	Price             string `json:"price"`
+	LongCountPercent  string `json:"longCountPercent"`
+	ShortCountPercent string `json:"shortCountPercent"`
+}
+
+type BrokerBook struct {
+	Instrument  string    `json:"instrument"`
+	Time        time.Time `json:"time"`
+	Price       string    `json:"price"`
+	BucketWidth string    `json:"bucketWidth"`
+	Buckets     []Bucket  `json:"buckets"`
+}
+
+type InstrumentPricing struct {
+	Time   time.Time `json:"time"`
+	Prices []struct {
+		Type string    `json:"type"`
+		Time time.Time `json:"time"`
+		Bids []struct {
+			Price     float64 `json:"price,string"`
+			Liquidity int     `json:"liquidity"`
+		} `json:"bids"`
+		Asks []struct {
+			Price     float64 `json:"price,string"`
+			Liquidity int     `json:"liquidity"`
+		} `json:"asks"`
+		CloseoutBid    float64 `json:"closeoutBid,string"`
+		CloseoutAsk    float64 `json:"closeoutAsk,string"`
+		Status         string  `json:"status"`
+		Tradeable      bool    `json:"tradeable"`
+		UnitsAvailable struct {
+			Default struct {
+				Long  string `json:"long"`
+				Short string `json:"short"`
+			} `json:"default"`
+			OpenOnly struct {
+				Long  string `json:"long"`
+				Short string `json:"short"`
+			} `json:"openOnly"`
+			ReduceFirst struct {
+				Long  string `json:"long"`
+				Short string `json:"short"`
+			} `json:"reduceFirst"`
+			ReduceOnly struct {
+				Long  string `json:"long"`
+				Short string `json:"short"`
+			} `json:"reduceOnly"`
+		} `json:"unitsAvailable"`
+		QuoteHomeConversionFactors struct {
+			PositiveUnits string `json:"positiveUnits"`
+			NegativeUnits string `json:"negativeUnits"`
+		} `json:"quoteHomeConversionFactors"`
+		Instrument string `json:"instrument"`
+	} `json:"prices"`
+}
+
+func GetCandles(instrument string, count string, granularity string) (*InstrumentHistory, error) {
 	queryValues := url.Values{}
 	queryValues.Add("instruments", instrument)
 	queryValues.Add("count", count)
 	queryValues.Add("granularity", granularity)
 
-	req, err := http.NewRequest("GET", oandaHost+"/instruments/"+instrument+"/candles?"+queryValues.Encode(), nil
+	reqArgs := &ReqArgs{
+		ReqMethod: "GET",
+		URL:       oandaHost + "/instruments/" + instrument + "/candles?" + queryValues.Encode(),
+	}
 
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", bearer)
-	req.Header.Add("Connection", "Keep-Alive")
+	candlesBytes, err := MakeRequest(reqArgs)
 
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := client.Do(req)
+	instrumentHistory := &InstrumentHistory{}
+	err = json.Unmarshal(candlesBytes, instrumentHistory)
 
 	if err != nil {
 		return nil, err
 	}
 
-	defer resp.Body.Close()
+	return instrumentHistory, nil
 
-	ihByte, err := ioutil.ReadAll(resp.Body)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return ihByte, err
 }
