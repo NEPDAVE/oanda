@@ -3,15 +3,24 @@ package oanda
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
-	"net/http"
 	"time"
 )
 
+/*
+Order Endpoints
+*/
+
+//OrderPayload represents the Order details
 type OrderPayload struct {
 	Order Order `json:"order"`
 }
-
+type StopLossOnFill struct {
+	TimeInForce string `json:"timeInForce"`
+	Price       string `json:"price"`
+}
+type TakeProfitOnFill struct {
+	Price string `json:"price"`
+}
 type Order struct {
 	Price            string           `json:"price"`
 	StopLossOnFill   StopLossOnFill   `json:"stopLossOnFill"`
@@ -23,17 +32,8 @@ type Order struct {
 	PositionFill     string           `json:"positionFill"`
 }
 
-type StopLossOnFill struct {
-	TimeInForce string `json:"timeInForce"`
-	Price       string `json:"price"`
-}
-
-type TakeProfitOnFill struct {
-	Price string `json:"price"`
-}
-
-//OrderResponse
-type OrderResponse struct {
+//OrderResponsePayload represents the Order transaction details sent from Oanda
+type OrderResponsePayload struct {
 	LastTransactionID      string                 `json:"lastTransactionID"`
 	OrderCreateTransaction OrderCreateTransaction `json:"orderCreateTransaction"`
 	OrderFillTransaction   OrderFillTransaction   `json:"orderFillTransaction"`
@@ -74,62 +74,33 @@ type OrderFillTransaction struct {
 	UserID         int         `json:"userID"`
 }
 
-//TODO this should take a struct?
-/*
-	newOrder(struct)
-	marshalOrder(struct) []byte
-	createOrder([] byte)
-
-*/
-
-func NewOrder(op *OrderPayload) (*OrderResponse, error) {
-	opByte, err := json.Marshal(op)
+func CreateOrder(orderPayload *OrderPayload) (*OrderResponsePayload, error) {
+	opBytes, err := json.Marshal(orderPayload)
 
 	if err != nil {
 		return nil, err
 	}
 
-	orderByte, err := CreateOrder(opByte)
+	body := bytes.NewBuffer(opBytes)
+
+	reqArgs := &ReqArgs{
+		ReqMethod: "PUT",
+		URL:       oandaHost + "/accounts/" + accountID + "/orders",
+		Body:      body,
+	}
+
+	orderRespBytes, err := MakeRequest(reqArgs)
 
 	if err != nil {
 		return nil, err
 	}
 
-	orderResp := &OrderResponse{}
-
-	err = json.Unmarshal(orderByte, orderResp)
+	orderResp := &OrderResponsePayload{}
+	err = json.Unmarshal(orderRespBytes, orderResp)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return orderResp, nil
-}
-
-func CreateOrder(orders []byte) ([]byte, error) {
-	body := bytes.NewBuffer(orders)
-	req, err := http.NewRequest("POST", oandaHost+"/accounts/"+accountID+"/orders", body)
-
-	req.Header.Set("Authorization", bearer)
-	req.Header.Set("content-type", "application/json")
-
-	if err != nil {
-		return []byte{}, err
-	}
-
-	resp, err := client.Do(req)
-
-	if err != nil {
-		return []byte{}, err
-	}
-
-	defer resp.Body.Close()
-
-	createOrderByte, _ := ioutil.ReadAll(resp.Body)
-
-	if err != nil {
-		return []byte{}, err
-	}
-
-	return createOrderByte, err
 }
