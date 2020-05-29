@@ -27,7 +27,7 @@ func MakeRequest(ra *ReqArgs) ([]byte, error) {
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", bearer)
-	req.Header.Add("Connection", "Keep-Alive")
+	req.Header.Add("connection", "keep-alive")
 
 	resp, err := http.DefaultClient.Do(req)
 

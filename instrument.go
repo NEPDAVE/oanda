@@ -32,6 +32,7 @@ func GetCandles(instrument string, count string, granularity string) (*Instrumen
 	queryValues.Add("instruments", instrument)
 	queryValues.Add("count", count)
 	queryValues.Add("granularity", granularity)
+	queryValues.Add("alignmentTimezone", "America/New_York")
 
 	reqArgs := &ReqArgs{
 		ReqMethod: "GET",
