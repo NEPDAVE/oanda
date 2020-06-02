@@ -1,8 +1,6 @@
 package oanda
 
 import (
-	//"bytes"
-	//"encoding/json"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -37,11 +35,11 @@ func MakeRequest(ra *ReqArgs) ([]byte, error) {
 
 	defer resp.Body.Close()
 
-	respByte, err := ioutil.ReadAll(resp.Body)
+	respBytes, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return respByte, nil
+	return respBytes, nil
 }
