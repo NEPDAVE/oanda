@@ -19,7 +19,8 @@ type StopLossOnFill struct {
 	Price       string `json:"price"`
 }
 type TakeProfitOnFill struct {
-	Price string `json:"price"`
+	TimeInForce string `json:"timeInForce"`
+	Price       string `json:"price"`
 }
 type Order struct {
 	Price            string           `json:"price"`
