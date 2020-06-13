@@ -3,6 +3,7 @@ package oanda
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -76,6 +77,10 @@ type OrderFillTransaction struct {
 }
 
 func CreateOrder(orderPayload *OrderPayload) (*OrderResponsePayload, error) {
+	fmt.Println("ORDER PAYLOAD")
+	fmt.Println(orderPayload)
+	fmt.Println()
+
 	opBytes, err := json.Marshal(orderPayload)
 
 	if err != nil {
@@ -85,7 +90,7 @@ func CreateOrder(orderPayload *OrderPayload) (*OrderResponsePayload, error) {
 	body := bytes.NewBuffer(opBytes)
 
 	reqArgs := &ReqArgs{
-		ReqMethod: "PUT",
+		ReqMethod: "POST",
 		URL:       oandaHost + "/accounts/" + accountID + "/orders",
 		Body:      body,
 	}
