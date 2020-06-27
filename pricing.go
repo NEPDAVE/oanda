@@ -1,7 +1,9 @@
 package oanda
 
 import (
+	"bufio"
 	"encoding/json"
+	"net/http"
 	"net/url"
 	"strings"
 	"time"
@@ -82,4 +84,56 @@ func GetPricing(instruments []string) (*PricingPayload, error) {
 	}
 
 	return pricingPayload, nil
+}
+
+//StreamPayload is sent over channel in StreamPricing func
+type StreamPayload struct {
+	PricingPayload *PricingPayload
+	Error          error
+}
+
+//StreamPricing can stream multiple prices at once
+func StreamPricing(instruments []string) chan StreamPayload {
+	out := make(chan StreamPayload)
+	defer close(out)
+
+	client := &http.Client{}
+	instrumentsString := strings.Join(instruments, ",")
+	queryValues := url.Values{}
+	queryValues.Add("instruments", instrumentsString)
+
+	req, err := http.NewRequest("GET", streamOandaURL+"/accounts/"+accountID+
+		"/pricing/stream?"+queryValues.Encode(), nil)
+
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", bearer)
+
+	if err != nil {
+		out <- StreamPayload{Error: err}
+	}
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+		out <- StreamPayload{Error: err}
+	}
+
+	defer resp.Body.Close()
+
+	reader := bufio.NewReader(resp.Body)
+
+	for {
+		pricingBytes, err := reader.ReadBytes('\n')
+		if err != nil {
+			out <- StreamPayload{Error: err}
+		}
+
+		pricingPayload := &PricingPayload{}
+		err = json.Unmarshal(pricingBytes, pricingPayload)
+
+		if err != nil {
+			out <- StreamPayload{Error: err}
+		}
+		out <- StreamPayload{PricingPayload: pricingPayload, Error: err}
+	}
 }
