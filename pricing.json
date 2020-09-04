@@ -1,0 +1,113 @@
+{
+	"prices": [{
+			"asks": [{
+					"liquidity": 10000000,
+					"price": "1.13028"
+				},
+				{
+					"liquidity": 10000000,
+					"price": "1.13030"
+				}
+			],
+			"bids": [{
+					"liquidity": 10000000,
+					"price": "1.13015"
+				},
+				{
+					"liquidity": 10000000,
+					"price": "1.13013"
+				}
+			],
+			"closeoutAsk": "1.13032",
+			"closeoutBid": "1.13011",
+			"instrument": "EUR_USD",
+			"quoteHomeConversionFactors": {
+				"negativeUnits": "0.95904000",
+				"positiveUnits": "0.95886000"
+			},
+			"status": "tradeable",
+			"time": "2016-06-22T18:41:36.201836422Z",
+			"unitsAvailable": {
+				"default": {
+					"long": "2013434",
+					"short": "2014044"
+				},
+				"openOnly": {
+					"long": "2013434",
+					"short": "2014044"
+				},
+				"reduceFirst": {
+					"long": "2013434",
+					"short": "2014044"
+				},
+				"reduceOnly": {
+					"long": "0",
+					"short": "0"
+				}
+			}
+		},
+		{
+			"asks": [{
+					"liquidity": 1000000,
+					"price": "1.28260"
+				},
+				{
+					"liquidity": 2000000,
+					"price": "1.28261"
+				},
+				{
+					"liquidity": 5000000,
+					"price": "1.28262"
+				},
+				{
+					"liquidity": 10000000,
+					"price": "1.28264"
+				}
+			],
+			"bids": [{
+					"liquidity": 1000000,
+					"price": "1.28241"
+				},
+				{
+					"liquidity": 2000000,
+					"price": "1.28240"
+				},
+				{
+					"liquidity": 5000000,
+					"price": "1.28239"
+				},
+				{
+					"liquidity": 10000000,
+					"price": "1.28237"
+				}
+			],
+			"closeoutAsk": "1.28264",
+			"closeoutBid": "1.28237",
+			"instrument": "USD_CAD",
+			"quoteHomeConversionFactors": {
+				"negativeUnits": "0.74785000",
+				"positiveUnits": "0.74759000"
+			},
+			"status": "tradeable",
+			"time": "2016-06-22T18:41:36.042678456Z",
+			"unitsAvailable": {
+				"default": {
+					"long": "2275373",
+					"short": "2276522"
+				},
+				"openOnly": {
+					"long": "2275373",
+					"short": "2276522"
+				},
+				"reduceFirst": {
+					"long": "2275373",
+					"short": "2276522"
+				},
+				"reduceOnly": {
+					"long": "0",
+					"short": "0"
+				}
+			}
+		}
+	]
+}

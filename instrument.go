@@ -8,12 +8,12 @@ import (
 
 //InstrumentHistory represents the JSON returned by /v3/instruments/{instrument}/candles
 type InstrumentHistory struct {
-	Candles     []Candles `json:"candles"`
+	Candles     []Candle `json:"candles"`
 	Granularity string    `json:"granularity"`
 	Instrument  string    `json:"instrument"`
 }
 
-type Candles struct {
+type Candle struct {
 	Complete bool      `json:"complete"`
 	Mid      Mid       `json:"mid"`
 	Time     time.Time `json:"time"`
@@ -36,7 +36,7 @@ func GetCandles(instrument string, count string, granularity string) (*Instrumen
 
 	reqArgs := &ReqArgs{
 		ReqMethod: "GET",
-		URL:       oandaHost + "/instruments/" + instrument + "/candles?" + queryValues.Encode(),
+		URL:       OandaHost + "/instruments/" + instrument + "/candles?" + queryValues.Encode(),
 	}
 
 	candlesBytes, err := MakeRequest(reqArgs)

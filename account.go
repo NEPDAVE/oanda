@@ -63,7 +63,7 @@ type Account struct {
 func GetAccountSummary() (*AccountPayload, error) {
 	reqArgs := &ReqArgs{
 		ReqMethod: "GET",
-		URL:       oandaHost + "/accounts/" + accountID + "/summary",
+		URL:       OandaHost + "/accounts/" + accountID + "/summary",
 	}
 
 	accountBytes, err := MakeRequest(reqArgs)
@@ -85,7 +85,7 @@ func GetAccountSummary() (*AccountPayload, error) {
 func GetAccount() (*AccountPayload, error) {
 	reqArgs := &ReqArgs{
 		ReqMethod: "GET",
-		URL:       oandaHost + "/accounts/" + accountID,
+		URL:       OandaHost + "/accounts/" + accountID,
 	}
 
 	accountBytes, err := MakeRequest(reqArgs)

@@ -67,7 +67,7 @@ func GetPricing(instruments []string) (*PricingPayload, error) {
 
 	reqArgs := &ReqArgs{
 		ReqMethod: "GET",
-		URL:       oandaHost + "/accounts/" + accountID + "/pricing?" + queryValues.Encode(),
+		URL:       OandaHost + "/accounts/" + accountID + "/pricing?" + queryValues.Encode(),
 	}
 
 	pricingBytes, err := MakeRequest(reqArgs)

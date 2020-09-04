@@ -49,7 +49,7 @@ type CloseTradePayload struct {
 func GetOpenTrades() (*TradesPayload, error) {
 	reqArgs := &ReqArgs{
 		ReqMethod: "GET",
-		URL:       oandaHost + "/accounts/" + accountID + "/openTrades",
+		URL:       OandaHost + "/accounts/" + accountID + "/openTrades",
 	}
 
 	openTradesBytes, err := MakeRequest(reqArgs)
@@ -72,7 +72,7 @@ func GetOpenTrades() (*TradesPayload, error) {
 func GetTrade(tradeSpecifier string) (*TradePayload, error) {
 	reqArgs := &ReqArgs{
 		ReqMethod: "GET",
-		URL:       oandaHost + "/accounts/" + accountID + "/trades/" + tradeSpecifier,
+		URL:       OandaHost + "/accounts/" + accountID + "/trades/" + tradeSpecifier,
 	}
 
 	tradeBytes, err := MakeRequest(reqArgs)
@@ -103,7 +103,7 @@ func CloseTrade(tradeSpecifier string, units string) (*TradePayload, error) {
 
 	reqArgs := &ReqArgs{
 		ReqMethod: "PUT",
-		URL:       oandaHost + "/accounts/" + accountID + "/trades/" + tradeSpecifier + "/close",
+		URL:       OandaHost + "/accounts/" + accountID + "/trades/" + tradeSpecifier + "/close",
 		Body:      body,
 	}
 
