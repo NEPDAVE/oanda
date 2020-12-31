@@ -53,5 +53,4 @@ func GetCandles(instrument string, count string, granularity string) (*Instrumen
 	}
 
 	return instrumentHistory, nil
-
 }

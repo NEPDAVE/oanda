@@ -23,7 +23,9 @@ type TradesPayload struct {
 }
 
 type ClientExtensions struct {
-	ID string `json:"id"`
+	Comment string `json:"comment"`
+	Tag     string `json:"tag"`
+	ID      string `json:"id"`
 }
 
 type Trade struct {
@@ -43,6 +45,19 @@ type Trade struct {
 //CloseTradePayload represent the number of units to reduce a trade by
 type CloseTradePayload struct {
 	Units string
+}
+
+type DependentOrders struct {
+	TakeProfit TakeProfit `json:"takeProfit"`
+	StopLoss   StopLoss   `json:"stopLoss"`
+}
+type TakeProfit struct {
+	TimeInForce string `json:"timeInForce"`
+	Price       string `json:"price"`
+}
+type StopLoss struct {
+	TimeInForce string `json:"timeInForce"`
+	Price       string `json:"price"`
 }
 
 //GetOpenTrades returns all the open trades for an account
@@ -104,6 +119,39 @@ func CloseTrade(tradeSpecifier string, units string) (*TradePayload, error) {
 	reqArgs := &ReqArgs{
 		ReqMethod: "PUT",
 		URL:       OandaHost + "/accounts/" + accountID + "/trades/" + tradeSpecifier + "/close",
+		Body:      body,
+	}
+
+	tradeBytes, err := MakeRequest(reqArgs)
+
+	if err != nil {
+		return nil, err
+	}
+
+	trade := &TradePayload{}
+	err = json.Unmarshal(tradeBytes, trade)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return trade, nil
+}
+
+//ModifyDependentOrders replaces and/or cancels a trade's dependent orders - IE
+//take profit, stop loss, and trailing stop loss orders.
+func ModifyDependentOrders(stopLoss StopLoss, takeProfit TakeProfit, tradeSpecifier string) (*TradePayload, error) {
+	dOBytes, err := json.Marshal(DependentOrders{StopLoss: stopLoss, TakeProfit: takeProfit})
+
+	if err != nil {
+		return nil, err
+	}
+
+	body := bytes.NewReader(dOBytes)
+
+	reqArgs := &ReqArgs{
+		ReqMethod: "PUT",
+		URL:       OandaHost + "/accounts/" + accountID + "/trades/" + tradeSpecifier + "/orders",
 		Body:      body,
 	}
 
