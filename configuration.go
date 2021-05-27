@@ -1,22 +1,17 @@
 package oanda
 
-import (
-	"net/http"
-	"os"
-)
+import "os"
 
 var (
-	client         = &http.Client{}
-	OandaHost      = os.Getenv("OANDA_HOST")
-	streamOandaURL = os.Getenv("STREAM_OANDA_HOST")
-	bearer         = "Bearer " + os.Getenv("OANDA_TOKEN")
-	accountID      = os.Getenv("OANDA_ACCOUNT_ID")
+	Host       = os.Getenv("OANDA_HOST")
+	StreamHost = os.Getenv("STREAM_OANDA_HOST")
+	AccountID  = os.Getenv("OANDA_ACCOUNT_ID")
+	Bearer     = "Bearer " + os.Getenv("OANDA_TOKEN")
 )
 
 func Init() {
-	OandaHost = os.Getenv("OANDA_HOST")
-	streamOandaURL = os.Getenv("STREAM_OANDA_URL")
-	bearer = "Bearer " + os.Getenv("OANDA_TOKEN")
-	accountID = os.Getenv("OANDA_ACCOUNT_ID")
-
+	Host = os.Getenv("OANDA_HOST")
+	StreamHost = os.Getenv("STREAM_OANDA_URL")
+	Bearer = "Bearer " + os.Getenv("OANDA_TOKEN")
+	AccountID = os.Getenv("OANDA_ACCOUNT_ID")
 }

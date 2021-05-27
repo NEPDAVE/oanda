@@ -65,9 +65,9 @@ func GetPricing(instruments []string) (*PricingPayload, error) {
 	queryValues := url.Values{}
 	queryValues.Add("instruments", instrumentsString)
 
-	reqArgs := &ReqArgs{
-		ReqMethod: "GET",
-		URL:       OandaHost + "/accounts/" + accountID + "/pricing?" + queryValues.Encode(),
+	reqArgs := &RequestArgs{
+		Method: "GET",
+		URL:    Host + "/accounts/" + AccountID + "/pricing?" + queryValues.Encode(),
 	}
 
 	pricingBytes, err := MakeRequest(reqArgs)
@@ -102,11 +102,11 @@ func StreamPricing(instruments []string) chan StreamPayload {
 	queryValues := url.Values{}
 	queryValues.Add("instruments", instrumentsString)
 
-	req, err := http.NewRequest("GET", streamOandaURL+"/accounts/"+accountID+
+	req, err := http.NewRequest("GET", StreamHost+"/accounts/"+AccountID+
 		"/pricing/stream?"+queryValues.Encode(), nil)
 
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", bearer)
+	req.Header.Add("Authorization", Bearer)
 
 	if err != nil {
 		out <- StreamPayload{Error: err}

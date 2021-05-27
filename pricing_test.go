@@ -26,8 +26,7 @@ func TestGetPricing(t *testing.T) {
 
 	server := httptest.NewServer(http.HandlerFunc(f))
 	defer server.Close()
-	oandaHost = server.URL
-
+	//oandaHost = server.URL
 
 	pricing, err := GetPricing([]string{"EUR_USD"})
 
@@ -38,7 +37,4 @@ func TestGetPricing(t *testing.T) {
 	if pricing.Prices[0].Instrument != "EUR_USD" {
 		t.Fail()
 	}
-
-
-
 }

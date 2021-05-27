@@ -9,8 +9,8 @@ import (
 //InstrumentHistory represents the JSON returned by /v3/instruments/{instrument}/candles
 type InstrumentHistory struct {
 	Candles     []Candle `json:"candles"`
-	Granularity string    `json:"granularity"`
-	Instrument  string    `json:"instrument"`
+	Granularity string   `json:"granularity"`
+	Instrument  string   `json:"instrument"`
 }
 
 type Candle struct {
@@ -34,9 +34,9 @@ func GetCandles(instrument string, count string, granularity string) (*Instrumen
 	queryValues.Add("granularity", granularity)
 	queryValues.Add("alignmentTimezone", "America/New_York")
 
-	reqArgs := &ReqArgs{
-		ReqMethod: "GET",
-		URL:       OandaHost + "/instruments/" + instrument + "/candles?" + queryValues.Encode(),
+	reqArgs := &RequestArgs{
+		Method: "GET",
+		URL:    Host + "/instruments/" + instrument + "/candles?" + queryValues.Encode(),
 	}
 
 	candlesBytes, err := MakeRequest(reqArgs)
